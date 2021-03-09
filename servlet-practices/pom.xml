@@ -32,5 +32,6 @@
 			
 	<modules>
 		<module>helloweb2</module>
+		<module>helloweb3</module>
 	</modules>
 </project>

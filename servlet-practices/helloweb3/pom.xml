@@ -7,14 +7,14 @@
 		<artifactId>servlet-practices</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>helloweb2</artifactId>
+	<artifactId>helloweb3</artifactId>
 	<packaging>war</packaging>
 	
 	<dependencies>
 	</dependencies>
 	
 	<build>
-		<finalName>helloweb2</finalName>
+		<finalName>helloweb3</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
