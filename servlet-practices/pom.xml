@@ -35,5 +35,6 @@
 		<module>helloweb3</module>
 		<module>test</module>
 		<module>a</module>
+		<module>emaillist01</module>
 	</modules>
 </project>

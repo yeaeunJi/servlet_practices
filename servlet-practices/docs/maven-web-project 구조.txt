@@ -13,9 +13,9 @@ helloweb
 	|       |		|----- [/webapp]
 	|       |		|			|----- index.jsp
 	|       |		|			|----- /WEB-INF		
-	|       |		|				|----- / lib  : 메이븐 라이브러리들이 복사되어 있음	
+	|       |		|				|----- / lib  : 메이븐 라이브러리들이 복사되어 있음(빌드 시 자동추가됨)	
 	|       |		|					|----- mysql-jdbc-connector.jar
-	|       |		|				|----- / classes  : 컴파일된 .class 파일들이 들어가 있음
+	|       |		|				|----- / classes  : 컴파일된 .class 파일들이 들어가 있음(빌드 시 자동추가됨)
 	|       |		|					|---- /com 
 	|       |		|						|---- /saltlux 
 	|		|		|							|---- /helloweb3
