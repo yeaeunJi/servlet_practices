@@ -1,0 +1,42 @@
+helloweb
+	|----- [/src]
+	|		|----- [/main]
+	| 		|		|----- [/java] 
+	|       |		|			|---- /com 
+	|       |		|				|---- /saltlux 
+	|		|		|					|---- /helloweb3
+	|		|		|						|---- /controller
+	|		|		|							|---- HelloServlet.java
+	|       |		|----- [/resources] : 빌드 시 그대로 복사되어 /WEB-INF/classes 밑에 들어감
+	|		|		|			|-- /config	
+	|		|		|				|-- db.proerties
+	|       |		|----- [/webapp]
+	|       |		|			|----- index.jsp
+	|       |		|			|----- /WEB-INF		
+	|       |		|				|----- / lib  : 메이븐 라이브러리들이 복사되어 있음	
+	|       |		|					|----- mysql-jdbc-connector.jar
+	|       |		|				|----- / classes  : 컴파일된 .class 파일들이 들어가 있음
+	|       |		|					|---- /com 
+	|       |		|						|---- /saltlux 
+	|		|		|							|---- /helloweb3
+	|		|		|								|---- /controller
+	|		|		|									|---- HelloServlet.class
+	|		|----- [/test]   ==> 빌드할 때에는 제외됨. pom.xml에 설정해놓음
+	| 		|		|----- [/java] 
+	|       |		|			|---- /com 
+	|       |		|				|---- /saltlux 
+	|		|		|					|---- /helloweb3
+	|		|		|						|---- /controller
+	|		|		|							|---- /test
+	|		|		|								|---- HelloServlet.java(테스팅 코드 작성)
+	|       |		|----- [/resources] : 테스트에 필요한 리소스들
+
+	
+	[ ] : 소스폴더
+	소스 = package
+	        + code(*.java) 
+	        + resources(*.xml, *.properties, *.yml 등)
+	        
+	war로 빌드시 묶이는 부분 :  [/webapp]	 하위
+	/WEB-INF	: 보안상 이유로 접근 불가능
+	 
