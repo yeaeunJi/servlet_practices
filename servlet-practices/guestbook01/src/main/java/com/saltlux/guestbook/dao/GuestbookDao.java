@@ -20,13 +20,12 @@ public class GuestbookDao {
 
 		try {
 			conn = getConnection();
-			String sql = "insert into guestbook values(null, ? , ?, ?, date_format(reg_date, '%Y-%m-%d %H:%i:%s'));";
+			String sql = "insert into guestbook values(null, ? , ?, ?, date_format(now(), '%Y-%m-%d %H:%i:%s'));";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, vo.getName());
 			pstmt.setString(2, vo.getPassword());
 			pstmt.setString(3, vo.getContents());
-
 			int count = pstmt.executeUpdate() ; 
 			result = count == 1 ? true:false;
 
@@ -51,7 +50,7 @@ public class GuestbookDao {
 
 		try {
 			conn = getConnection();
-			String sql = "select no, name, password, contents, date_format(reg_date, '%Y-%m-%d %H:%i:%s') as reg_date from guestbook order by no desc ;";
+			String sql = "select no, name, password, contents, date_format(reg_date, '%Y-%m-%d %H:%i:%s') as reg_date from guestbook order by no ;";
 			pstmt = conn.prepareStatement(sql);
 
 			result = pstmt.executeQuery();
@@ -68,7 +67,6 @@ public class GuestbookDao {
 				vo.setPassword(password);
 				vo.setContents(contents);
 				vo.setRegDate(regDate);
-				
 				list.add(vo);
 			}
 
