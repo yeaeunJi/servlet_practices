@@ -9,10 +9,17 @@
 	</parent>
 	<artifactId>emaillist01</artifactId>
 	<packaging>war</packaging>
-	
+
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.21</version>
+		</dependency>
+
 	</dependencies>
-	
+
 	<build>
 		<finalName>emaillist01</finalName>
 		<resources>
@@ -41,5 +48,5 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>		
+	</build>
 </project>
