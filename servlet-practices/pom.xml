@@ -36,5 +36,6 @@
 		<module>test</module>
 		<module>a</module>
 		<module>emaillist01</module>
+		<module>guestbook01</module>
 	</modules>
 </project>
