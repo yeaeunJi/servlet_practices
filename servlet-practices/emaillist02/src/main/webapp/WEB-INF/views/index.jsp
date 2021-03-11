@@ -14,6 +14,7 @@
 <body>
 	<h1>메일 리스트에 가입되었습니다.</h1>
 	<p>입력한 정보 내역입니다.</p>
+	<a href="/emaillist02/el?a=form" >추가메일 등록</a>
 	<!-- 메일정보 리스트 -->
 	<%
 		for(EmaillistVo vo : list){
@@ -38,7 +39,7 @@
 	%>
 	<br>
 	<p>
-		<a href="/emaillist01/form.jsp" >추가메일 등록</a>
+	
 	</p>
 	<br>
 </body>
