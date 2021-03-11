@@ -6,13 +6,27 @@
 	<artifactId>servlet-practices</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.ouputEncoding>UTF-8</project.reporting.ouputEncoding>
 	</properties>
 
 	<dependencies>
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope> <!-- 컴파일 할때에만 사용하도록    -->
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope> <!-- 컴파일 할때에만 사용하도록    -->
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -29,7 +43,7 @@
 			</plugin>
 		</plugins>
 	</build>
-			
+
 	<modules>
 		<module>helloweb2</module>
 		<module>helloweb3</module>
@@ -39,5 +53,6 @@
 		<module>guestbook01</module>
 		<module>emaillist02</module>
 		<module>guestbook02</module>
+		<module>mysite02</module>
 	</modules>
 </project>
