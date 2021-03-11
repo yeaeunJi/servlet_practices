@@ -14,6 +14,7 @@ public class EmaillistServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
 		String action = request.getParameter("a");
 		// 만약 url에 emaillist02/el/list 형식으로 보낼 경우에는 다음과 같이 처리해야 함
 		//  web.xml에 추가
@@ -21,12 +22,21 @@ public class EmaillistServlet extends HttpServlet {
 		//	String[] paths = uri.split("/");
 		//	String action = paths[paths.length-1];
 		// ==> Spring 사용 시 더 간단해져서 자주 사용됨
-		
 		if("form".equals(action)) { // action.equals("list")로 사용할 경우 action이 null이 되면 문제가 될 수 있음
 									// nullPointerException ==> 500 페이지 표시됨(내부 서버 오류)
 			WebUtil.forward("/WEB-INF/views/form.jsp", request, response);
 		} else if("add".equals(action)) {
-			
+			EmaillistVo vo = new EmaillistVo(); 
+			String firstName= request.getParameter("firstName");
+			String lastName = request.getParameter("lastName");
+			String email = request.getParameter("email");
+			vo.setFirst_name(firstName);
+			vo.setLast_name(lastName);
+			vo.setEmail(email);
+			EmaillistDao dao = new EmaillistDao();
+			dao.insert(vo);
+			WebUtil.redirect(request.getContextPath()+"/el", request, response);
+		
 		} else {
 			List<EmaillistVo> list = new EmaillistDao().findAll();
 			// 포워딩(forwarding = request dispatch = request extension)을 통해 JSP로 제어권을 넘겨줘야함
