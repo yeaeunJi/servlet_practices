@@ -1,5 +1,10 @@
+<%@page import="com.saltlux.mysite.vo.BoardVo"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%
+	List<BoardVo> list = (List<BoardVo>) request.getAttribute("list");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +17,8 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="" method="post">
+				<form id="search_form" action="<%=request.getContextPath()%>/board" method="post">
+					<input type='hidden' name='a' value = 'search'/>
 					<input type="text" id="kwd" name="kwd" value="">
 					<input type="submit" value="찾기">
 				</form>
@@ -24,34 +30,32 @@
 						<th>조회수</th>
 						<th>작성일</th>
 						<th>&nbsp;</th>
-					</tr>				
+					</tr>			
+					<%
+						for(int i=list.size()-1; i >= 0; i--){
+							BoardVo vo = list.get(i);
+					%>	
 					<tr>
-						<td>3</td>
-						<td><a href="">세 번째 글입니다.</a></td>
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-10-11 12:04:20</td>
-						<td><a href="" class="del">삭제</a></td>
+						<td><%=i+1%></td>
+						<td><a href="<%=request.getContextPath()%>/board?a=view&no=<%=vo.getNo()%>"><%=vo.getTitle()%></a></td>
+						<td><%=vo.getWriter() %></td>
+						<td><%=vo.getCount() %></td>
+						<td><%=vo.getRegDate() %></td>
+						<td><a href="<%=request.getContextPath()%>/board?a=delete&writer=지예은&no=<%=vo.getNo() %>" class="del">삭제</a></td>
+
 					</tr>
-					<tr>
-						<td>2</td>
-						<td><a href="">두 번째 글입니다.</a></td>
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-10-02 12:04:12</td>
-						<td><a href="" class="del">삭제</a></td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td><a href="">첫 번째 글입니다.</a></td>
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-09-25 07:24:32</td>
-						<td><a href="" class="del">삭제</a></td>
-					</tr>
+					<%
+						}
+					%>
 				</table>
+				<!-- 
+				<div>			
+					<ol id="paging">
+						<li><a href= "<%=request.getContextPath()%>/board?curpage=1">1</a></li>
+					</ol>
+				</div>	 -->
 				<div class="bottom">
-					<a href="" id="new-book">글쓰기</a>
+					<a href='<%=request.getContextPath()%>/board?a=writeform&name=지예은' id="new-book">글쓰기</a>
 				</div>				
 			</div>
 		</div>
