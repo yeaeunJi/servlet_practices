@@ -5,7 +5,6 @@
 	pageEncoding="UTF-8"%>
 <%
 	List<GuestbookVo> list = (List<GuestbookVo>)request.getAttribute("list");
-System.out.println("list"+list);
 %>
 <html>
 <head>
@@ -47,8 +46,8 @@ System.out.println("list"+list);
 			<!-- no을 그대로 뿌리는 것이 아니라 조회된 코멘트 수 기준 -->
 			<td><%=vo.getName()%></td>
 			<td><%=vo.getRegDate()%></td>
-			<td align=center><a
-				href="<%=request.getContextPath()%>/gb?a=deleteform&no=<%=vo.getNo()%>">삭제</a></td>
+			<td align=center>
+			<a	href="<%=request.getContextPath()%>/gb?a=deleteform&no=<%=vo.getNo()%>">삭제</a></td>
 			<!--  과제 : 비밀번호를 받은 후 삭제하는 기능 -->
 		</tr>
 		<tr>

@@ -27,6 +27,7 @@ public class GuestbookServlet extends HttpServlet {
 			
 			GuestbookDao dao = new GuestbookDao();
 			dao.delete(vo);
+			// redirect : 브라우저가 해당 url로 이동. response, request 객체가 초기화됨
 			WebUtil.redirect(request.getContextPath()+"/gb", request, response);
 			
 		} else if("deleteform".equals(action)) {
@@ -34,6 +35,7 @@ public class GuestbookServlet extends HttpServlet {
 			String password = request.getParameter("password");
 			request.setAttribute("no", no); // request안에 보내줄 데이터를 담음
 			request.setAttribute("password", password);
+			// 내부에서 일어나는 이동으로 브라우저에서의 url 이동 X. request, response 객체가 유지됨
 			WebUtil.forward("/WEB-INF/views/deleteform.jsp", request, response);
 		}  
 		else if("add".equals(action)) {
