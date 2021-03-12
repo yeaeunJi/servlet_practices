@@ -3,6 +3,7 @@ package com.saltlux.mysite.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.saltlux.mysite.vo.UserVo;
@@ -23,6 +24,48 @@ public class UserDao {
 		return conn;
 	}
 
+	
+	public UserVo findByEmailAndPassword(UserVo vo ) {
+		UserVo userVo = null ;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet result = null;
+		try {
+			conn = getConnection();
+			String sql ="select no, name from user where email=? and password=?;";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, vo.getEmail());
+			pstmt.setString(2, vo.getPassword());
+
+			result = pstmt.executeQuery();
+			
+			if(result.next()) {
+				Long no = result.getLong(1);
+				String name = result.getString(2);
+				
+				userVo = new UserVo();
+				userVo.setName(name);
+				userVo.setNo(no);
+			}
+			
+		} catch(SQLException e) {
+			System.out.println("error-"+e);
+			
+		} finally {
+			try {
+				if(result!=null) result.close();
+				if(conn!=null) conn.close();
+				if(pstmt != null) pstmt.close();
+			} catch (SQLException e) {
+				System.out.println("error-"+e);
+			}
+			
+		}
+		return userVo;
+	}
+	
 
 	public boolean insert(UserVo vo) {
 		boolean result = false;
