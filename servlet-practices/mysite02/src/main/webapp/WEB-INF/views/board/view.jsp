@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@page import="com.saltlux.mysite.vo.BoardVo"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -9,12 +12,12 @@
 <head>
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link href="<%=request.getContextPath()%>/assets/css/board.css"
+<link href="${pageContext.request.contextPath }/assets/css/board.css"
 	rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="container">
-		<jsp:include page="/WEB-INF/views/includes/header.jsp" />
+		<c:import url ="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="board" class="board-form">
 				<table class="tbl-ex">
@@ -35,13 +38,13 @@
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="<%=request.getContextPath()%>/board">글목록</a>
-					<a href="<%=request.getContextPath()%>/board?a=updateform&no=<%=vo.getNo()%>">글수정</a>
+					<a href="${pageContext.request.contextPath }/board">글목록</a>
+					<a href="${pageContext.request.contextPath }/board?a=updateform&no=<%=vo.getNo()%>">글수정</a>
 				</div>
 			</div>
 		</div>
-		<jsp:include page="/WEB-INF/views/includes/navigation.jsp" />
-		<jsp:include page="/WEB-INF/views/includes/footer.jsp" />
+		<c:import url ="/WEB-INF/views/includes/navigation.jsp" />
+		<c:import url ="/WEB-INF/views/includes/footer.jsp" />
 	</div>
 </body>
 </html>

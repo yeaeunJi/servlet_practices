@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.saltlux.mysite.dao.BoardDao;
 import com.saltlux.mysite.vo.BoardVo;
@@ -90,6 +91,8 @@ public class BoardServlet extends HttpServlet {
 				new BoardDao().update(vo);
 				WebUtil.redirect(request.getContextPath()+"/board", request, response);
 			}
+
+
 		} else if ("delete".equals(action)) {
 			Long no = Long.parseLong(request.getParameter("no"));
 			String writer = request.getParameter("writer");

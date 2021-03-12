@@ -55,7 +55,7 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 			String sql = "select no, title, writer, count, reg_date "+
-					" from board order by no ";
+					" from board order by no desc ";
 			pstmt = conn.prepareStatement(sql);
 			result = pstmt.executeQuery();
 

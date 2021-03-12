@@ -15,6 +15,7 @@ public class MainServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
 		int visitCount = 0;
 		
 //		getServletContext().setAttribute(getServletName(), response); // 어플리케이션 범위로 객체 저장

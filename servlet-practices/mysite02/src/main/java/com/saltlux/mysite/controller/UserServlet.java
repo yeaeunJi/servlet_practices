@@ -72,6 +72,54 @@ public class UserServlet extends HttpServlet {
 			session.setAttribute("authUser", authUser);
 			
 			WebUtil.redirect(request.getContextPath()+"/main", request, response);
+		}else if ("updateform".equals(action)) {
+			// Access Control(접근 제어)
+			HttpSession session = request.getSession(false);
+			if(session == null) {
+				WebUtil.redirect(request.getContextPath()+"/main", request, response);
+				return;
+			}
+			UserVo authUser = (UserVo)session.getAttribute("authUser");
+			if(authUser == null) {
+				WebUtil.redirect(request.getContextPath()+"/main", request, response);
+				return;
+			}
+			Long no = authUser.getNo();
+			UserVo userVo = new UserDao().findByNo(no);
+			request.setAttribute("userVo", userVo);
+			WebUtil.forward("/WEB-INF/views/user/updateform.jsp", request, response);
+		}  else if ("update".equals(action)) {
+			String name = request.getParameter("name");
+			String password = request.getParameter("password");
+			String gender = request.getParameter("gender");
+			Long no = Long.parseLong(request.getParameter("no"));
+			
+			UserVo vo = new UserVo();
+			boolean result = false;
+			
+			if(password.isBlank() && !name.isBlank()) {
+				vo.setName(name);
+				vo.setGender(gender);
+				vo.setNo(no);
+				result = new UserDao().updateNameAndGender(vo);
+			} else {
+				vo.setName(name);
+				vo.setGender(gender);
+				vo.setNo(no);
+				vo.setPassword(password);
+				result = new UserDao().updateAll(vo);
+			}
+			
+			if (result) {
+				UserVo authUser = new UserDao().findByNo(no);
+				if(authUser == null) {
+					WebUtil.forward("/WEB-INF/views/main", request, response);
+					return;	
+				}
+				HttpSession session = request.getSession(true); 
+				session.setAttribute("authUser", authUser);
+			}
+			WebUtil.redirect(request.getContextPath()+"/main", request, response);
 		}
 		else {
 			WebUtil.redirect(request.getContextPath()+"/main", request, response);
