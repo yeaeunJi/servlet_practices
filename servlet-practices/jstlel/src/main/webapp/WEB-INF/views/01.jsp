@@ -36,5 +36,6 @@
 	<h1>Map으로 값 받아보기</h1>
 	- ${map.ival }
 	- ${map.fval }
+
 </body>
 </html>
