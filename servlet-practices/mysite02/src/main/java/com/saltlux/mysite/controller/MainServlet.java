@@ -15,7 +15,7 @@ public class MainServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
+		System.out.println("doGet()!!!!!!!!");
 		int visitCount = 0;
 		
 //		getServletContext().setAttribute(getServletName(), response); // 어플리케이션 범위로 객체 저장
@@ -41,7 +41,27 @@ public class MainServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("doPost()!!!!!!!!");
 		doGet(request, response);
 	}
-
+	
+	@Override
+	public void destroy() {
+		System.out.println("destroy()!!!!!!");
+		super.destroy();
+	}
+	
+	@Override
+	public void init() throws ServletException {
+		String configPath = this.getServletConfig().getInitParameter("config");
+		System.out.println("init()!!!!!!"+configPath);
+		super.init();
+	}
+	
+	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println("service()!!!!");
+		super.service(req,resp);
+	}
+	
 }
