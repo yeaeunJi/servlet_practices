@@ -1,8 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@page import="com.saltlux.mysite.vo.BoardVo"%>
-<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -37,12 +35,23 @@
 					<tr>
 					<!-- padding-left:\${(vo.depth-1)*20}px -->
 						<td>${count-status.index }</td>
-						<td><a style="text-align:left; padding-left:0px;"   href="${pageContext.request.contextPath }/board?a=view&no=${vo.no}">${vo.title }</a></td>
+						<td style="text-align:left; padding-left:0px;">
+							<a style="text-align:left; padding-left:0px;"   href="${pageContext.request.contextPath }/board?a=view&no=${vo.no}">
+							<c:if test="${vo.depth >= 1 }">
+								<c:forEach begin="1" end="${vo.depth}" step="1">
+									<span>&nbsp;</span>
+								</c:forEach>
+								<img src="${pageContext.request.contextPath}/assets/images/reply.png" />
+							</c:if>
+								${vo.title }
+							</a>
+						</td>
 						<td>${vo.writer }</td>
 						<td>${vo.count }</td>
 						<td>${vo.regDate }</td>
-						<td><a href="${pageContext.request.contextPath }/board?a=delete&writer=지예은&no=${vo.no}" class="del">삭제</a></td>
-
+						<c:if test="${!empty authUser  && authUser.no == vo.userNo}">
+						<td><a href="${pageContext.request.contextPath }/board?a=delete&no=${vo.no}" class="del">삭제</a></td>
+						</c:if>
 					</tr>
 					</c:forEach>
 				</table>
@@ -61,7 +70,9 @@
 				</div>					
 
 				<div class="bottom">
-					<a href='${pageContext.request.contextPath }/board?a=writeform&name=지예은' id="new-book">글쓰기</a>
+				 <c:if test="${!empty authUser }">
+				<a href='${pageContext.request.contextPath }/board?a=writeform' id="new-book">글쓰기</a>
+				</c:if> 
 				</div>
 				
 			</div>

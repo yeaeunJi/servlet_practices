@@ -99,9 +99,9 @@ public class GuestbookDao {
 			pstmt.setString(2, vo.getPassword());
 
 			int count = pstmt.executeUpdate() ;
-			
+
 			result = count == 1 ? true:false;
-			
+
 		} catch (SQLException e) { 
 			System.out.println("error:"+e);
 		} finally { // 자원 정리

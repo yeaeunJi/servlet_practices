@@ -18,10 +18,8 @@ public class EncodingFilter implements Filter {
 		request.setCharacterEncoding("utf-8");
 		
 		// 세션 확인
-		System.out.println("!");
 		chain.doFilter(request, response); 
 
-		System.out.println("!!");
 		// 재귀호출
 		// response 처리
 		// 세션업으면 쿠키 생성?

@@ -38,7 +38,7 @@ public class UserDao {
 			pstmt.setLong(1, no);
 
 			result = pstmt.executeQuery();
-			
+
 			if(result.next()) {
 				String name = result.getString(2);
 				String email = result.getString(3);
@@ -49,10 +49,10 @@ public class UserDao {
 				userVo.setEmail(email);
 				userVo.setGender(gender);
 			}
-			
+
 		} catch(SQLException e) {
 			System.out.println("error-"+e);
-			
+
 		} finally {
 			try {
 				if(result!=null) result.close();
@@ -61,11 +61,11 @@ public class UserDao {
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
 			}
-			
+
 		}
 		return userVo;
 	}
-	
+
 	public UserVo findByEmailAndPassword(UserVo vo ) {
 		UserVo userVo = null ;
 		Connection conn = null;
@@ -81,19 +81,19 @@ public class UserDao {
 			pstmt.setString(2, vo.getPassword());
 
 			result = pstmt.executeQuery();
-			
+
 			if(result.next()) {
 				Long no = result.getLong(1);
 				String name = result.getString(2);
-				
+
 				userVo = new UserVo();
 				userVo.setName(name);
 				userVo.setNo(no);
 			}
-			
+
 		} catch(SQLException e) {
 			System.out.println("error-"+e);
-			
+
 		} finally {
 			try {
 				if(result!=null) result.close();
@@ -102,11 +102,11 @@ public class UserDao {
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
 			}
-			
+
 		}
 		return userVo;
 	}
-	
+
 	public boolean updateNameAndGender(UserVo vo) {
 		boolean result = false;
 		Connection conn = null;
@@ -119,7 +119,7 @@ public class UserDao {
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, vo.getName());
-//			pstmt.setString(3, vo.getPassword());
+			//			pstmt.setString(3, vo.getPassword());
 			pstmt.setString(2, vo.getGender());
 			pstmt.setLong(3, vo.getNo());
 
@@ -136,10 +136,10 @@ public class UserDao {
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
 			}
-			
+
 		}
 	}
-	
+
 	public boolean updateAll(UserVo vo) {
 		boolean result = false;
 		Connection conn = null;
@@ -169,7 +169,7 @@ public class UserDao {
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
 			}
-			
+
 		}
 	}
 	public boolean insert(UserVo vo) {
@@ -203,7 +203,7 @@ public class UserDao {
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
 			}
-			
+
 		}
 	}
 }

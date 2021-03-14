@@ -14,11 +14,11 @@ import com.saltlux.web.mvc.WebUtil;
 
 public class GuestbookServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("a");
-		
+
 		if ("insert".equals(action)) {
 			GuestbookVo vo = new GuestbookVo();
 			String name = request.getParameter("name");
@@ -27,7 +27,7 @@ public class GuestbookServlet extends HttpServlet {
 			vo.setName(name);
 			vo.setPassword(password);
 			vo.setContents(contents);
-			
+
 			new GuestbookDao().insert(vo);
 			WebUtil.redirect(request.getContextPath()+"/guestbook", request, response);
 		} else if("deleteform".equals(action)) {
@@ -36,7 +36,7 @@ public class GuestbookServlet extends HttpServlet {
 		}  else if("delete".equals(action)) {
 			Long no = Long.parseLong(request.getParameter("no"));
 			String password = request.getParameter("password");
-			
+
 			GuestbookVo vo = new GuestbookVo();
 			vo.setNo(no);
 			vo.setPassword(password);
@@ -47,10 +47,10 @@ public class GuestbookServlet extends HttpServlet {
 			request.setAttribute("list", list); // request안에 보내줄 데이터를 담음
 			WebUtil.forward("/WEB-INF/views/guestbook/index.jsp", request, response);
 		}
-	
+
 	}
 
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}

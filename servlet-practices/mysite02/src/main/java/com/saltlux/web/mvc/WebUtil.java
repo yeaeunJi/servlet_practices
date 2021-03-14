@@ -6,6 +6,10 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.saltlux.mysite.dao.UserDao;
+import com.saltlux.mysite.vo.UserVo;
 
 public class WebUtil {
 
@@ -19,5 +23,10 @@ public class WebUtil {
 	public static void forward(String path, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher(path); // 해당 목적지로 분기할 dispatcher 객체를 얻음
 		rd.forward(request, response); // request, response를 위의 목적지로 전달
+	}
+	
+	public static UserVo getAuthUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		return (UserVo) session.getAttribute("authUser");
 	}
 }

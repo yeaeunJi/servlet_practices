@@ -15,11 +15,11 @@ public class MainServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("doGet()!!!!!!!!");
+		//		System.out.println("doGet()!!!!!!!!");
 		int visitCount = 0;
-		
-//		getServletContext().setAttribute(getServletName(), response); // 어플리케이션 범위로 객체 저장
-		
+
+		//		getServletContext().setAttribute(getServletName(), response); // 어플리케이션 범위로 객체 저장
+
 		// 쿠키 읽기
 		Cookie[] cookies = request.getCookies();
 		if(cookies != null && cookies.length > 0) {
@@ -29,39 +29,39 @@ public class MainServlet extends HttpServlet {
 				}
 			}
 		}
-		
+
 		visitCount++;
 		// 쿠키 쓰기 : 쿠키는 문자열로 써야함
 		Cookie cookie = new Cookie("visitCount", String.valueOf(visitCount));
 		cookie.setPath(request.getContextPath());
 		cookie.setMaxAge(24*60*60); // 1day
 		response.addCookie(cookie);
-		
+
 		WebUtil.forward("/WEB-INF/views/main/index.jsp", request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("doPost()!!!!!!!!");
+		//		System.out.println("doPost()!!!!!!!!");
 		doGet(request, response);
 	}
-	
+
 	@Override
 	public void destroy() {
-		System.out.println("destroy()!!!!!!");
+		//		System.out.println("destroy()!!!!!!");
 		super.destroy();
 	}
-	
+
 	@Override
 	public void init() throws ServletException {
-		String configPath = this.getServletConfig().getInitParameter("config");
-		System.out.println("init()!!!!!!"+configPath);
+		//		String configPath = this.getServletConfig().getInitParameter("config");
+		//		System.out.println("init()!!!!!!"+configPath);
 		super.init();
 	}
-	
+
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("service()!!!!");
+		//		System.out.println("service()!!!!");
 		super.service(req,resp);
 	}
-	
+
 }

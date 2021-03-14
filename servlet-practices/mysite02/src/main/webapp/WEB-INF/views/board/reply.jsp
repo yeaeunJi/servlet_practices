@@ -3,7 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!DOCTYPE>
 <html>
 <head>
 <title>mysite</title>
@@ -16,12 +17,12 @@
 		<div id="content">
 			<div id="board">
 				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
-					<input type = "hidden" name = "a" value="write">
-					<input type ="hidden" name="userNo" value="${authUser.no}"/>
+					<input type = "hidden" name = "a" value="reply">
+					<input type= "hidden" name="no" value="${no }"/>
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글쓰기</th>
-						</tr>
+						</tr>						
 						<tr>
 							<td class="label">제목</td>
 							<td><input type="text" name="title" value=""></td>
@@ -29,7 +30,7 @@
 						<tr>
 							<td class="label">내용</td>
 							<td>
-								<textarea id="content" name="content"></textarea>
+								<textarea id="content" name="contents"></textarea>
 							</td>
 						</tr>
 					</table>

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%	pageContext.setAttribute("newline", "\n"); %> <!-- 개행문자는 어쩔 수 없이 이렇게 사용해야함 -->
+<% pageContext.setAttribute("newline", "\n"); %>
 <html>
 <head>
 <title>mysite</title>
@@ -14,7 +14,7 @@
 </head>
 <body>
 	<div id="container">
-		<c:import url ="/WEB-INF/views/includes/header.jsp" />
+		<c:import url="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="guestbook">
 				<form action="${pageContext.request.contextPath }/guestbook"
@@ -36,13 +36,13 @@
 					</table>
 				</form>
 				<ul>
-				<c:set var="count" value="${fn:length(list) }"/>
-					<c:forEach items="${list }" begin="0" step="1" var="vo" varStatus="status">
+					<c:set var="count" value="${fn:length(list) }" />
+					<c:forEach items="${list }" begin="0" step="1" var="vo"
+						varStatus="status">
 						<li>
 							<table>
 								<tr>
-									<td>[${count-status.index }]
-									</td>
+									<td>[${count-status.index }]</td>
 									<td>${vo.name }</td>
 									<td>${vo.regDate }</td>
 									<td><a
@@ -57,8 +57,8 @@
 				</ul>
 			</div>
 		</div>
-		<c:import url ="/WEB-INF/views/includes/navigation.jsp" />
-		<c:import url ="/WEB-INF/views/includes/footer.jsp" />
+		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
+		<c:import url="/WEB-INF/views/includes/footer.jsp" />
 	</div>
 </body>
 </html>
