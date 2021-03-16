@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.saltlux.mysite.vo.BoardVo;
+import com.saltlux.mysite.vo.PageVo;
 
 public class BoardDao {
 
@@ -138,19 +139,21 @@ public class BoardDao {
 		return result;
 	}
 	
-	public List<BoardVo> findAll(){
+	public List<BoardVo> findAll(PageVo pageVo){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null;
 		List<BoardVo> list = new ArrayList<BoardVo>();
-
+		
 		try {
 			conn = getConnection();
 			String sql = "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth "
-					+ "from board order by group_no desc, order_no ;";
+					+ "from board order by group_no desc, order_no limit ?,?;";
 			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, pageVo.getStart());
+			pstmt.setLong(2, pageVo.getShowNum());
 			result = pstmt.executeQuery();
-
+			
 			while(result.next()) {
 				BoardVo vo = new BoardVo();
 				vo.setNo(result.getLong(1));
@@ -180,32 +183,22 @@ public class BoardDao {
 		return list;
 	}
 
-	public List<BoardVo> paging(int curpage, int shownum){
+	public Long paging(Long shownum){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		PreparedStatement pstmt2 = null;
 		ResultSet result = null;
-		List<BoardVo> list = new ArrayList<BoardVo>();
-
+		Long totalpage = 1L;
 		try {
 			conn = getConnection();
 
-			String sql = "select no, title, user_no, count, reg_date "+
-					" from board order by no desc limit ?, ?;";
+			String sql =  "SELECT CASE WHEN ceiling(count(no)/?)  = 0 THEN 1 ELSE ceiling(count(no)/?)  END AS totalpage FROM board;";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, (curpage - 1)*shownum);
-			pstmt.setInt(2, shownum);
+			pstmt.setLong(1,shownum );
+			pstmt.setLong(2,shownum );
 			result = pstmt.executeQuery();
 
 			while(result.next()) {
-				BoardVo vo = new BoardVo();
-				vo.setNo(result.getLong(1));
-				vo.setTitle(result.getString(2));
-				vo.setUserNo(result.getLong(3));
-				vo.setCount(result.getLong(4));
-				vo.setRegDate(result.getString(5));
-
-				list.add(vo);
+				totalpage = result.getLong(1);
 			}
 
 		} catch (SQLException e) {
@@ -219,7 +212,7 @@ public class BoardDao {
 				e.printStackTrace();
 			}
 		}
-		return list;
+		return totalpage;
 	}
 
 	public List<BoardVo> search(String kwd){

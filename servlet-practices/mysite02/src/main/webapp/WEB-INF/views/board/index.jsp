@@ -58,13 +58,13 @@
 				
 				<!-- pager 추가 -->
 				<div class="pager">
-					<ul>
+					<ul> <!-- 일단 페이지 전체 출력하기 -->
 						<li><a href="">◀</a></li>
-						<li><a href="">1</a></li>
-						<li class="selected">2</li>
-						<li><a href="">3</a></li>
-						<li>4</li>
-						<li>5</li>
+						<li><a href="${pageContext.request.contextPath }/board?curpage=1" class="selected">1</a>
+						<c:forEach  step="1"   begin="2"  end="${page.total}" varStatus="status">
+						<a href="${pageContext.request.contextPath }/board?curpage=${status.index}" >${status.index}</a>
+						</c:forEach>
+						</li>
 						<li><a href="">▶</a></li>
 					</ul>
 				</div>					
