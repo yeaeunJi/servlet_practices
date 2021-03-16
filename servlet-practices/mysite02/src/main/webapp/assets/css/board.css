@@ -82,6 +82,7 @@ input#kwd	{
 
 .board-form select {
 	padding:5px;
+	
 }
 
 tr.even td	{ background-color:#e8ecf6 }

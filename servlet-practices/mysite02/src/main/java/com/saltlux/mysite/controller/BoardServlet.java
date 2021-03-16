@@ -180,14 +180,16 @@ public class BoardServlet extends HttpServlet {
 			
 			if(request.getParameter("curpage") != null)
 				curpage = Long.parseLong(request.getParameter("curpage"));
+				
+			BoardDao dao = new BoardDao();
 			PageVo page = new PageVo();
-			
 			page.setShowNum(5L);
 			page.setCur(curpage);
-			Long totalpage = new BoardDao().paging(page.getShowNum());
-			page.setTotal(totalpage);
 			page.setStart((curpage - 1)*page.getShowNum());
-			List<BoardVo> list = new BoardDao().findAll(page);
+			Long totalpage = dao.paging(page.getShowNum());
+			page.setTotal(totalpage);
+			List<BoardVo> list = dao.findAll(page);
+			
 			request.setAttribute("list", list);
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);

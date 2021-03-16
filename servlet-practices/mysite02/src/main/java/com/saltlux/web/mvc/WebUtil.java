@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.saltlux.mysite.dao.BoardDao;
 import com.saltlux.mysite.dao.UserDao;
+import com.saltlux.mysite.vo.PageVo;
 import com.saltlux.mysite.vo.UserVo;
 
 public class WebUtil {
@@ -29,4 +31,6 @@ public class WebUtil {
 		HttpSession session = request.getSession(false);
 		return (UserVo) session.getAttribute("authUser");
 	}
+	
+
 }

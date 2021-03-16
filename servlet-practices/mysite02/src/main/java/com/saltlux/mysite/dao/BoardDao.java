@@ -153,7 +153,6 @@ public class BoardDao {
 			pstmt.setLong(1, pageVo.getStart());
 			pstmt.setLong(2, pageVo.getShowNum());
 			result = pstmt.executeQuery();
-			
 			while(result.next()) {
 				BoardVo vo = new BoardVo();
 				vo.setNo(result.getLong(1));
