@@ -11,6 +11,9 @@ public class BoardVo {
 	private Long gNo;
 	private Long oNo;
 	private Long depth;
+	private char delFlag = 'F'; // 삭제 여부
+	
+	
 	public Long getNo() {
 		return no;
 	}
@@ -71,14 +74,20 @@ public class BoardVo {
 	public void setDepth(Long depth) {
 		this.depth = depth;
 	}
+	public char getDelFlag() {
+		return delFlag;
+	}
+	public void setDelFlag(char delFlag) {
+		this.delFlag = delFlag;
+	}
 	
 	@Override
 	public String toString() {
 		return "BoardVo [no=" + no + ", title=" + title + ", writer=" + writer + ", userNo=" + userNo + ", contents="
 				+ contents + ", count=" + count + ", regDate=" + regDate + ", gNo=" + gNo + ", oNo=" + oNo + ", depth="
-				+ depth + "]";
+				+ depth + ", delFlag=" + delFlag + "]";
 	}
-	
+
 	
 	
 	

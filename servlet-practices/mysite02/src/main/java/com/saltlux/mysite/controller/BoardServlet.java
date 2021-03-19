@@ -2,6 +2,7 @@ package com.saltlux.mysite.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,8 @@ import com.saltlux.web.mvc.WebUtil;
 
 public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private Long showNum = 2L;
+	private Long pageShowNum = 3L;
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter("a");
 
@@ -175,21 +178,187 @@ public class BoardServlet extends HttpServlet {
 			new BoardDao().delete(vo);
 			WebUtil.redirect(request.getContextPath()+"/board", request, response);
 
-		} else { 			// 전체 게시판 조회
-			Long curpage = 1L;
+		} else if ("onePageBefore".equals(action)) {
+			System.out.println(" ===== 한 페이지 앞으로 이동 =====");
 			
-			if(request.getParameter("curpage") != null)
-				curpage = Long.parseLong(request.getParameter("curpage"));
-				
+			Long curPage = request.getParameter("curPage") == null?1L:Long.parseLong(request.getParameter("curPage"));
+			Long endPage = request.getParameter("endPage") == null?1L:Long.parseLong(request.getParameter("endPage"));
+			Long totalPage = request.getParameter("totalPage") == null?1L:Long.parseLong(request.getParameter("totalPage"));
+			Long startPage = request.getParameter("startPage") == null?1L:Long.parseLong(request.getParameter("startPage"));
+			System.out.println("endPage="+endPage);
+			if (curPage % pageShowNum == 1)
+				startPage -= pageShowNum;
+			
+			if (curPage % pageShowNum == 1) {
+				endPage =curPage-1;
+			}
+			
+			curPage --;
+			
 			BoardDao dao = new BoardDao();
 			PageVo page = new PageVo();
-			page.setShowNum(5L);
-			page.setCur(curpage);
-			page.setStart((curpage - 1)*page.getShowNum());
-			Long totalpage = dao.paging(page.getShowNum());
-			page.setTotal(totalpage);
+			page= dao.paging(showNum);
+			page.setShowNum(showNum);
+			page.setCurPage(curPage);
+			page.setStartPage(startPage);
+			page.setEndPage(endPage);
+			page.setStart((curPage-1)*showNum);
+			page.setTotal(page.getTotal());
+			page.setPageShowNum(pageShowNum);
+			System.out.println("=== paging ====");
+			System.out.println(page);
+			
+			
 			List<BoardVo> list = dao.findAll(page);
 			
+			request.setAttribute("list", list);
+			request.setAttribute("page", page);
+			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
+		} 	else if ("onePageNext".equals(action)) {
+			System.out.println(" ===== 한 페이지 옆으로 이동 =====");
+			
+			Long curPage = request.getParameter("curPage") == null?1L:Long.parseLong(request.getParameter("curPage"));
+			Long endPage = request.getParameter("endPage") == null?1L:Long.parseLong(request.getParameter("endPage"));
+			Long totalPage = request.getParameter("totalPage") == null?1L:Long.parseLong(request.getParameter("totalPage"));
+			Long startPage = request.getParameter("startPage") == null?1L:Long.parseLong(request.getParameter("startPage"));
+			System.out.println("endPage="+endPage);
+			if (curPage % pageShowNum == 0 && totalPage != curPage)
+				startPage += pageShowNum;
+			
+			if (totalPage - startPage < pageShowNum)	endPage = totalPage;
+			else if(curPage % pageShowNum == 0) {
+				System.out.println("endPage 증가");
+				endPage += pageShowNum;
+			}
+			
+			curPage ++;
+			
+			BoardDao dao = new BoardDao();
+			PageVo page = new PageVo();
+			page= dao.paging(showNum);
+			page.setShowNum(showNum);
+			page.setCurPage(curPage);
+			page.setStartPage(startPage);
+			page.setEndPage(endPage);
+			page.setStart((curPage-1)*showNum);
+			page.setTotal(page.getTotal());
+			page.setPageShowNum(pageShowNum);
+			System.out.println("=== paging ====");
+			System.out.println(page);
+			
+			
+			List<BoardVo> list = dao.findAll(page);
+			
+			request.setAttribute("list", list);
+			request.setAttribute("page", page);
+			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
+		} 	 else if ("mulPageNext".equals(action)) {
+				System.out.println("====== mulPageNext ====");
+				Long endPage = request.getParameter("endPage") == null?1L:Long.parseLong(request.getParameter("endPage"));
+				Long totalPage = request.getParameter("totalPage") == null?1L:Long.parseLong(request.getParameter("totalPage"));
+
+				BoardDao dao = new BoardDao();
+				PageVo page = new PageVo();
+				page= dao.paging(showNum);
+				page.setShowNum(showNum);
+				page.setCurPage(endPage+1);
+				page.setStartPage(endPage+1);
+				page.setStart((endPage)*showNum);
+
+				if (totalPage - (endPage+1) < pageShowNum)	endPage = totalPage;
+				else if(endPage % pageShowNum == 0) {
+					endPage += pageShowNum;
+				}
+				
+				page.setEndPage(endPage);
+				page.setTotal(page.getTotal());
+				page.setPageShowNum(pageShowNum);
+				System.out.println("+++++ paging +++++");
+				System.out.println(page);
+				List<BoardVo> list = dao.findAll(page);
+				
+				request.setAttribute("list", list);
+				request.setAttribute("page", page);
+				WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
+			} 
+		else if("onePageBefore".equals(action)){ 			// 전체 게시판 조회
+			String strCur =  request.getParameter("curPage");
+			Long curPage = 0L;
+			Long showNum = 2L;
+			PageVo page = new PageVo();
+			
+			if (Pattern.matches("[1-9]*$", strCur))
+				curPage = Long.parseLong(strCur);
+			
+			if(curPage % showNum == 0) {
+				page.setStartPage(curPage+1);
+			}
+//			BoardDao dao = new BoardDao();
+//			page= dao.paging(showNum);
+//			page.setShowNum(2L);
+//			page.setCur(curpage);
+//page.setPageShowNum(pageShowNum);
+//			page.setStart((curpage - 1)*showNum);
+//			page.setTotal(page.getTotalCount());
+//			List<BoardVo> list = dao.findAll(page);
+//			page.setStartPage(1L);
+//			
+//			
+//			if (page.getTotal() >= 5L) 	page.setEndPage(5L);
+//			else page.setEndPage(page.getTotal());
+//			System.out.println("startPage:"+page.getStartPage()+", endPage : "+page.getEndPage());
+//			request.setAttribute("list", list);
+//			request.setAttribute("page", page);
+//			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
+		}else if("movePage".equals(action)) { 			// 전체 게시판 조회
+			BoardDao dao = new BoardDao();
+			PageVo page = new PageVo();
+			String movePage = (request.getParameter("movePage"));
+			Long curPage = 1L;
+			
+			if(!movePage.isBlank()) {
+				curPage =Long.parseLong(movePage); 
+			}
+			
+			Long endPage =1L;
+			page = dao.paging(showNum);
+			Long startPage = 1L;
+		
+			if (page.getTotal() - startPage < pageShowNum)	endPage = page.getTotal();
+			else  endPage = pageShowNum;
+			
+			page= dao.paging(showNum);
+			page.setShowNum(showNum);
+			page.setCurPage(curPage);
+			page.setStart((curPage-1)*showNum);
+			page.setStartPage(startPage);
+			page.setEndPage(endPage);
+			page.setPageShowNum(pageShowNum);
+			System.out.println("movePage result:"+page);
+			List<BoardVo> list = dao.findAll(page);
+			request.setAttribute("list", list);
+			request.setAttribute("page", page);
+			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
+		}else { 			// 전체 게시판 조회
+			BoardDao dao = new BoardDao();
+			PageVo page = new PageVo();
+			Long curPage = 1L;
+			Long endPage =1L;
+			page = dao.paging(showNum);
+			Long startPage = 1L;
+		
+			if (page.getTotal() - startPage < pageShowNum)	endPage = page.getTotal();
+			else  endPage = (Long)pageShowNum;
+			
+			page= dao.paging(showNum);
+			page.setShowNum(showNum);
+			page.setCurPage(curPage);
+			page.setStartPage(startPage);
+			page.setEndPage(endPage);
+			page.setStart((curPage-1)*showNum);
+			page.setPageShowNum(pageShowNum);
+			System.out.println("paging:"+page);
+			List<BoardVo> list = dao.findAll(page);
 			request.setAttribute("list", list);
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);

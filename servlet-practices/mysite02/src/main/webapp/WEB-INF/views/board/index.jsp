@@ -37,7 +37,7 @@
 						var="vo">
 						<tr>
 							<!-- padding-left:\${(vo.depth-1)*20}px -->
-							<td>${count-status.index }</td>
+							<td>${page.totalCount - (page.curPage-1)*page.showNum-status.index}</td>
 							<td style="text-align: left; padding-left: 0px;"><a
 								style="text-align: left; padding-left: 0px;"
 								href="${pageContext.request.contextPath }/board?a=view&no=${vo.no}">
@@ -47,7 +47,14 @@
 										</c:forEach>
 										<img
 											src="${pageContext.request.contextPath}/assets/images/reply.png" />
-									</c:if> ${vo.title }
+									</c:if> <c:choose>
+										<c:when test="${fn:length(vo.title) <= 10}">
+									 		${vo.title}
+									 	</c:when>
+										<c:otherwise>
+									 		${fn:substring(vo.title,0,10)}...
+									 	</c:otherwise>
+									</c:choose>
 							</a></td>
 							<td>${vo.writer }</td>
 							<td>${vo.count }</td>
@@ -64,29 +71,45 @@
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
+						<li><a href="#">◀◀ </a></li>
+					
 						<c:choose>
-						<c:when   test="${page.cur!=1}" >
-							<li><a href="${pageContext.request.contextPath }/board?curpage=${page.cur -1}">◀</a></li>
-						</c:when>
-						<c:otherwise>
-						<li><a href="#" >◀</a></li>
-						</c:otherwise>
+							<c:when test="${page.curPage!=1}">
+								<li><a
+									href="${pageContext.request.contextPath }/board?a=onePageBefore&curPage=${page.curPage}&startPage=${page.startPage}&endPage=${page.endPage}&totalPage=${page.total}">◀</a></li>
+							</c:when>
+							<c:otherwise>
+								<li><a href="#">◀</a></li>
+							</c:otherwise>
 						</c:choose>
-						<li><a
-							href="${pageContext.request.contextPath }/board?curpage=1"
-							class="selected">1</a></li>
-						<c:forEach step="1" begin="2" end="${page.total}"
-							varStatus="status">
-							<li><a
-								href="${pageContext.request.contextPath }/board?curpage=${status.index}">${status.index}</a></li>
+						
+						<c:forEach step="1" begin="${page.startPage}" end="${page.endPage}"  var="pageNum"  varStatus="status">
+					<li><a
+								href="${pageContext.request.contextPath }/board?a=movePage&movePage=${pageNum}">${pageNum}</a></li>
+					 
 						</c:forEach>
+						
 						<c:choose>
-						<c:when test="${page.cur!= page.total}" >
-							<li><a href="${pageContext.request.contextPath }/board?curpage=${page.cur+1}">▶</a></li>
-						</c:when>
-						<c:otherwise>
-						<li><a href="#">▶</a></li>
-						</c:otherwise>
+							<c:when test="${page.curPage!= page.total}">
+								<li><a
+									href="${pageContext.request.contextPath }/board?a=onePageNext&curPage=${page.curPage}&startPage=${page.startPage}&endPage=${page.endPage}&totalPage=${page.total}">▶</a></li>
+							</c:when>
+							<c:otherwise>
+								<li><a href="">▶</a></li>
+							</c:otherwise>
+						</c:choose>
+
+
+						<c:choose>
+							<c:when test="${page.curPage != page.total}">
+								<li><a
+									href="${pageContext.request.contextPath }/board?a=mulPageNext&endPage=${page.endPage}&totalPage=${page.total}">
+										▶▶</a></li>
+							</c:when>
+							<c:otherwise>
+								<li><a href="">
+										▶▶</a></li>
+							</c:otherwise>
 						</c:choose>
 					</ul>
 				</div>

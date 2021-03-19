@@ -2,15 +2,21 @@ package com.saltlux.mysite.vo;
 
 public class PageVo {
 	private Long total; 	// 전체 페이지 수
-	private Long cur;  	// 현재 페이지
-	private Long start; // 1~5, 6~10, ...와 같이 첫번째 페이지 숫자  
-	private Long showNum;
+	private Long curPage;  	// 현재 페이지
+	private Long start; // start row
+	private Long showNum; // 한 페이지에 보여줄 게시물 수
+	private Long startPage; // 시작 페이지 (1, 1+showNum, ... )
+	private Long endPage; // 마지막 페이징 (showNum, showNum*2, ... )
+	private Long totalCount; // 조회된 전체 행 수
+	private Long  pageShowNum ; 
 	
-	public Long getShowNum() {
-		return showNum;
+	
+	
+	public Long getPageShowNum() {
+		return pageShowNum;
 	}
-	public void setShowNum(Long showNum) {
-		this.showNum = showNum;
+	public void setPageShowNum(Long pageShowNum) {
+		this.pageShowNum = pageShowNum;
 	}
 	public Long getTotal() {
 		return total;
@@ -18,11 +24,11 @@ public class PageVo {
 	public void setTotal(Long total) {
 		this.total = total;
 	}
-	public Long getCur() {
-		return cur;
+	public Long getCurPage() {
+		return curPage;
 	}
-	public void setCur(Long cur) {
-		this.cur = cur;
+	public void setCurPage(Long curPage) {
+		this.curPage = curPage;
 	}
 	public Long getStart() {
 		return start;
@@ -30,10 +36,38 @@ public class PageVo {
 	public void setStart(Long start) {
 		this.start = start;
 	}
+	public Long getShowNum() {
+		return showNum;
+	}
+	public void setShowNum(Long showNum) {
+		this.showNum = showNum;
+	}
+	public Long getStartPage() {
+		return startPage;
+	}
+	public void setStartPage(Long startPage) {
+		this.startPage = startPage;
+	}
+	public Long getEndPage() {
+		return endPage;
+	}
+	public void setEndPage(Long endPage) {
+		this.endPage = endPage;
+	}
+	public Long getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(Long totalCount) {
+		this.totalCount = totalCount;
+	}
 	@Override
 	public String toString() {
-		return "PageVo [total=" + total + ", cur=" + cur + ", start=" + start + ",  showNum=" + showNum	+ "]";
+		return "PageVo [total=" + total + ", curPage=" + curPage + ", start=" + start + ", showNum=" + showNum
+				+ ", startPage=" + startPage + ", endPage=" + endPage + ", totalCount=" + totalCount + ", pageShowNum="
+				+ pageShowNum + "]";
 	}
+
+	
 	
 	
 	

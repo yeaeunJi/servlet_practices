@@ -50,8 +50,8 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 			String sql = "insert"	+ 
-					"	into board (no, title, contents, user_no, count, reg_date, group_no, order_no, depth) "	+
-					"   values (null, ?, ?,?, 0, now(), ?, 1 , 0);";
+					"	into board (no, title, contents, user_no, count, reg_date, group_no, order_no, depth, del_flag) "	+
+					"   values (null, ?, ?,?, 0, now(), ?, 1 , 0, 'F');";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, vo.getTitle());
@@ -83,8 +83,8 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 			String sql = "insert"	+ 
-					"	into board (no, title, contents, user_no, count, reg_date, group_no, order_no, depth) "	+
-					"   values (null, ?, ?,?, 0, now(), ?, ? , ?);";
+					"	into board (no, title, contents, user_no, count, reg_date, group_no, order_no, depth, del_flag) "	+
+					"   values (null, ?, ?,?, 0, now(), ?, ? , ?, 'F');";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, vo.getTitle());
@@ -147,11 +147,12 @@ public class BoardDao {
 		
 		try {
 			conn = getConnection();
-			String sql = "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth "
+			String sql = "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth, del_flag  "
 					+ "from board order by group_no desc, order_no limit ?,?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1, pageVo.getStart());
 			pstmt.setLong(2, pageVo.getShowNum());
+			System.out.println("sql : "+ pstmt.toString());
 			result = pstmt.executeQuery();
 			while(result.next()) {
 				BoardVo vo = new BoardVo();
@@ -164,7 +165,7 @@ public class BoardDao {
 				vo.setgNo(result.getLong(7));
 				vo.setoNo(result.getLong(8));
 				vo.setDepth(result.getLong(9));
-
+				vo.setDelFlag(result.getString(10).charAt(0));
 				list.add(vo);
 			}
 
@@ -182,24 +183,32 @@ public class BoardDao {
 		return list;
 	}
 
-	public Long paging(Long shownum){
+	public PageVo paging(Long shownum){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null;
-		Long totalpage = 1L;
+		PageVo page = null;
 		try {
 			conn = getConnection();
 
-			String sql =  "SELECT CASE WHEN ceiling(count(no)/?)  = 0 THEN 1 ELSE ceiling(count(no)/?)  END AS totalpage FROM board;";
+			
+			String sql =  "SELECT count(no) as total, CASE WHEN ceiling(count(no)/?)  = 0 THEN 1 ELSE ceiling(count(no)/?)  END AS totalpage FROM board;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1,shownum );
 			pstmt.setLong(2,shownum );
 			result = pstmt.executeQuery();
 
+			Long totalPage = 1L;
+			Long totalCount = 0L;
+			page = new PageVo();
+			
 			while(result.next()) {
-				totalpage = result.getLong(1);
+				totalCount = result.getLong(1);
+				totalPage = result.getLong(2);
 			}
 
+			page.setTotalCount(totalCount);
+			page.setTotal(totalPage);
 		} catch (SQLException e) {
 			System.out.println("error-"+e);
 		} finally {
@@ -211,7 +220,7 @@ public class BoardDao {
 				e.printStackTrace();
 			}
 		}
-		return totalpage;
+		return page;
 	}
 
 	public List<BoardVo> search(String kwd){
@@ -222,7 +231,7 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			String sql =  "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth from board "+
+			String sql =  "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth,  del_flag  from board "+
 					" where contents like ? or title like ?; ";
 			pstmt = conn.prepareStatement(sql);
 
@@ -241,7 +250,7 @@ public class BoardDao {
 				vo.setgNo(result.getLong(7));
 				vo.setoNo(result.getLong(8));
 				vo.setDepth(result.getLong(9));
-
+				vo.setDelFlag(result.getString(10).charAt(0));
 
 				list.add(vo);
 			}
@@ -270,7 +279,7 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 			String sql = "select no, title, contents, user_no, (select name from user where no=board.user_no) as writer, count, reg_date from board " 
-					+" where no = ? ;";
+					+" where no = ? and del_flag = 'F' ;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1, no);
 			result = pstmt.executeQuery();
