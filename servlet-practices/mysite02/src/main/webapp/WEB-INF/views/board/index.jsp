@@ -71,7 +71,17 @@
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
-						<li><a href="#">◀◀ </a></li>
+					<c:choose>
+							<c:when test="${page.startPage!=1}">
+								<li><a
+									href="${pageContext.request.contextPath }/board?a=mulPageBefore&startPage=${page.startPage}&totalPage=${page.total}">
+										◀◀ </a></li>
+							</c:when>
+							<c:otherwise>
+									<li><a href="#">◀◀ </a></li>
+							</c:otherwise>
+						</c:choose>
+					
 					
 						<c:choose>
 							<c:when test="${page.curPage!=1}">
@@ -95,19 +105,19 @@
 									href="${pageContext.request.contextPath }/board?a=onePageNext&curPage=${page.curPage}&startPage=${page.startPage}&endPage=${page.endPage}&totalPage=${page.total}">▶</a></li>
 							</c:when>
 							<c:otherwise>
-								<li><a href="">▶</a></li>
+								<li><a href="#">▶</a></li>
 							</c:otherwise>
 						</c:choose>
 
 
 						<c:choose>
-							<c:when test="${page.curPage != page.total}">
+							<c:when test="${page.endPage != page.total}">
 								<li><a
 									href="${pageContext.request.contextPath }/board?a=mulPageNext&endPage=${page.endPage}&totalPage=${page.total}">
 										▶▶</a></li>
 							</c:when>
 							<c:otherwise>
-								<li><a href="">
+								<li><a href="#">
 										▶▶</a></li>
 							</c:otherwise>
 						</c:choose>
