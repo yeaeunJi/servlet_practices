@@ -12,7 +12,6 @@ import com.saltlux.mysite.vo.BoardVo;
 import com.saltlux.mysite.vo.PageVo;
 
 public class BoardDao {
-
 	
 	private  Long  getNewGNo() {
 		Connection conn = null;
@@ -139,7 +138,7 @@ public class BoardDao {
 		return result;
 	}
 	
-	public List<BoardVo> findAll(PageVo pageVo){
+	public List<BoardVo> findAll(PageVo pageVo, String keyword){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null;
@@ -148,11 +147,12 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 			String sql = "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth, del_flag  "
-					+ "from board order by group_no desc, order_no limit ?,?;";
+					+ "from board where contents like ? or title like ? order by group_no desc, order_no limit ?,?;";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setLong(1, pageVo.getStart());
-			pstmt.setLong(2, pageVo.getShowNum());
-			System.out.println("sql : "+ pstmt.toString());
+			pstmt.setString(1,"%"+keyword+"%" );
+			pstmt.setString(2,"%"+keyword+"%" );
+			pstmt.setLong(3, pageVo.getStart());
+			pstmt.setLong(4, pageVo.getShowNum());
 			result = pstmt.executeQuery();
 			while(result.next()) {
 				BoardVo vo = new BoardVo();
@@ -183,7 +183,7 @@ public class BoardDao {
 		return list;
 	}
 
-	public PageVo paging(Long shownum){
+	public PageVo paging(Long shownum, String keyword){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null;
@@ -192,10 +192,12 @@ public class BoardDao {
 			conn = getConnection();
 
 			
-			String sql =  "SELECT count(no) as total, CASE WHEN ceiling(count(no)/?)  = 0 THEN 1 ELSE ceiling(count(no)/?)  END AS totalpage FROM board;";
+			String sql =  "SELECT count(no) as total, CASE WHEN ceiling(count(no)/?)  = 0 THEN 1 ELSE ceiling(count(no)/?)  END AS totalpage FROM board where contents like ? or title like ?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1,shownum );
 			pstmt.setLong(2,shownum );
+			pstmt.setString(3,"%"+keyword+"%" );
+			pstmt.setString(4,"%"+keyword+"%" );
 			result = pstmt.executeQuery();
 
 			Long totalPage = 1L;
@@ -223,7 +225,7 @@ public class BoardDao {
 		return page;
 	}
 
-	public List<BoardVo> search(String kwd){
+	public List<BoardVo> search(String keyword){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null;
@@ -235,8 +237,8 @@ public class BoardDao {
 					" where contents like ? or title like ?; ";
 			pstmt = conn.prepareStatement(sql);
 
-			pstmt.setString(1, "%"+kwd+"%");
-			pstmt.setString(2, "%"+kwd+"%");
+			pstmt.setString(1, "%"+keyword+"%");
+			pstmt.setString(2, "%"+keyword+"%");
 			result = pstmt.executeQuery();
 
 			while(result.next()) {
@@ -278,7 +280,7 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			String sql = "select no, title, contents, user_no, (select name from user where no=board.user_no) as writer, count, reg_date from board " 
+			String sql = "select no, title, contents, user_no, (select name from user where no=board.user_no) as writer, count, reg_date, depth, group_no, order_no from board " 
 					+" where no = ? and del_flag = 'F' ;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1, no);
@@ -293,6 +295,9 @@ public class BoardDao {
 			vo.setWriter(result.getString(5));
 			vo.setCount(result.getLong(6));
 			vo.setRegDate(result.getString(7));
+			vo.setDepth(result.getLong(8));
+			vo.setgNo(result.getLong(9));
+			vo.setoNo(result.getLong(10));
 		} catch (SQLException e) {
 			System.out.println("error-"+e);
 		} finally {
@@ -379,11 +384,9 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			//			String sql = "delete from board where no = ? and user_no=?;";
-			String sql = "delete from board where no = ?;";
+			String sql = "delete from board where no = ? ;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1,  vo.getNo());
-			//			pstmt.setLong(2, vo.getUserNo());
 
 			int count = pstmt.executeUpdate();
 			result = count == 1;
@@ -400,6 +403,41 @@ public class BoardDao {
 		}
 
 		return result;
+	}
+	
+	public boolean getChildCount(BoardVo vo) {
+		boolean result = true;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			String sql = "select count(*)  from board where depth > ? and order_no = ?+1 and group_no=?;";
+			pstmt = conn.prepareStatement(sql);
+			//pstmt.setLong(1,  vo.getNo());
+			pstmt.setLong(1, vo.getDepth());
+			pstmt.setLong(2, vo.getoNo());
+			pstmt.setLong(3, vo.getgNo());
+			rs = pstmt.executeQuery();
+
+			rs.next();
+			int count = 0;
+			count = rs.getInt(1);
+			result = count>0?true:false;
+			
+		} catch (SQLException e) {
+			System.out.println("error-"+e);
+		} finally {
+			try {
+				if(pstmt!=null)	pstmt.close();
+				if(conn!=null) conn.close();
+				if(rs!=null) rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+		
 	}
 
 	// db connection method
@@ -425,7 +463,6 @@ public class BoardDao {
 
 		try {
 			conn = getConnection();
-			System.out.println("부모글 no = "+no);
 			String sql = "select group_no, order_no, depth from board where no=?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setLong(1, no);
@@ -433,7 +470,6 @@ public class BoardDao {
 
 			result.next();
 			vo.setgNo(result.getLong(1));
-			System.out.println("부모글의 그룹="+result.getLong(1));
 			vo.setoNo(result.getLong(2));
 			vo.setDepth(result.getLong(3));
 			
