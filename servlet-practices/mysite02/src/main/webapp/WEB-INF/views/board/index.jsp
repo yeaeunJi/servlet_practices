@@ -19,7 +19,7 @@
 				<form id="search_form"
 					action="${pageContext.request.contextPath }/board" method="post">
 					<input type='hidden' name='a' value='search' /> <input type="text"
-						id="kwd" name="kwd" value=""> <input type="submit"
+						id="kwd" name="keyword" value="${keyword}"> <input type="submit"
 						value="찾기">
 					<h6>* 제목과 내용에서 해당 키워드를 검색합니다.</h6>
 				</form>
@@ -40,7 +40,7 @@
 							<td>${page.totalCount - (page.curPage-1)*page.showNum-status.index}</td>
 							<td style="text-align: left; padding-left: 0px;"><a
 								style="text-align: left; padding-left: 0px;"
-								href="${pageContext.request.contextPath }/board?a=view&no=${vo.no}">
+								href="${pageContext.request.contextPath }/board?a=view&no=${vo.no}&keyword=${keyword}">
 									<c:if test="${vo.depth >= 1 }">
 										<c:forEach begin="1" end="${vo.depth}" step="1">
 											<span>&nbsp;</span>
@@ -61,7 +61,7 @@
 							<td>${vo.regDate }</td>
 							<c:if test="${!empty authUser  && authUser.no == vo.userNo}">
 								<td><a
-									href="${pageContext.request.contextPath }/board?a=delete&no=${vo.no}"
+									href="${pageContext.request.contextPath }/board?a=delete&no=${vo.no}&keyword=${keyword}"
 									class="del">삭제</a></td>
 							</c:if>
 						</tr>
@@ -74,7 +74,7 @@
 					<c:choose>
 							<c:when test="${page.startPage!=1}">
 								<li><a
-									href="${pageContext.request.contextPath }/board?a=mulPageBefore&startPage=${page.startPage}&totalPage=${page.total}">
+									href="${pageContext.request.contextPath }/board?a=mulPageBefore&startPage=${page.startPage}&totalPage=${page.total}&keyword=${keyword}">
 										◀◀ </a></li>
 							</c:when>
 							<c:otherwise>
@@ -86,7 +86,7 @@
 						<c:choose>
 							<c:when test="${page.curPage!=1}">
 								<li><a
-									href="${pageContext.request.contextPath }/board?a=onePageBefore&curPage=${page.curPage}&startPage=${page.startPage}&endPage=${page.endPage}&totalPage=${page.total}">◀</a></li>
+									href="${pageContext.request.contextPath }/board?a=onePageBefore&curPage=${page.curPage}&startPage=${page.startPage}&endPage=${page.endPage}&totalPage=${page.total}&keyword=${keyword}">◀</a></li>
 							</c:when>
 							<c:otherwise>
 								<li><a href="#">◀</a></li>
@@ -95,14 +95,14 @@
 						
 						<c:forEach step="1" begin="${page.startPage}" end="${page.endPage}"  var="pageNum"  varStatus="status">
 					<li><a
-								href="${pageContext.request.contextPath }/board?a=movePage&movePage=${pageNum}">${pageNum}</a></li>
+								href="${pageContext.request.contextPath }/board?a=movePage&movePage=${pageNum}&keyword=${keyword}">${pageNum}</a></li>
 					 
 						</c:forEach>
 						
 						<c:choose>
 							<c:when test="${page.curPage!= page.total}">
 								<li><a
-									href="${pageContext.request.contextPath }/board?a=onePageNext&curPage=${page.curPage}&startPage=${page.startPage}&endPage=${page.endPage}&totalPage=${page.total}">▶</a></li>
+									href="${pageContext.request.contextPath }/board?a=onePageNext&curPage=${page.curPage}&startPage=${page.startPage}&endPage=${page.endPage}&totalPage=${page.total}&keyword=${keyword}">▶</a></li>
 							</c:when>
 							<c:otherwise>
 								<li><a href="#">▶</a></li>
@@ -113,7 +113,7 @@
 						<c:choose>
 							<c:when test="${page.endPage != page.total}">
 								<li><a
-									href="${pageContext.request.contextPath }/board?a=mulPageNext&endPage=${page.endPage}&totalPage=${page.total}">
+									href="${pageContext.request.contextPath }/board?a=mulPageNext&endPage=${page.endPage}&totalPage=${page.total}&keyword=${keyword}">
 										▶▶</a></li>
 							</c:when>
 							<c:otherwise>
