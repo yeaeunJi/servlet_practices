@@ -10,6 +10,15 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link href="${pageContext.request.contextPath }/assets/css/board.css"
 	rel="stylesheet" type="text/css">
+<style>
+.tbl-ex tr:nth-child(odd) {
+background-color : gray;
+}
+
+.tbl-ex tr:nth-child(even) {
+background-color: #777799;;
+}
+</style>
 </head>
 <body>
 	<div id="container">
@@ -35,12 +44,12 @@
 					<c:set var="count" value="${fn:length(list)}" />
 					<c:forEach items="${list}" begin="0" step="1" varStatus="status"
 						var="vo">
-						<tr>
+						<tr class="board">
 							<!-- padding-left:\${(vo.depth-1)*20}px -->
 							<td>${page.totalCount - (page.curPage-1)*page.showNum-status.index}</td>
 							<td style="text-align: left; padding-left: 0px;"><a
 								style="text-align: left; padding-left: 0px;"
-								href="${pageContext.request.contextPath }/board?a=view&no=${vo.no}&keyword=${keyword}">
+								href="${pageContext.request.contextPath }/board?a=view&no=${vo.no}&keyword=${keyword}" onclick="setHistory(this)">
 									<c:if test="${vo.depth >= 1 }">
 										<c:forEach begin="1" end="${vo.depth}" step="1">
 											<span>&nbsp;</span>
@@ -131,10 +140,56 @@
 					</c:if>
 				</div>
 
+				<div class="history">
+				<h3 style="display:inline-block;"> ** 최근 방문한 게시글 ** </h3>
+				<button onclick="removeHistory()">히스토리 지우기</button> 
+				<ul  id="historyList" >			
+				</ul>
+				</div>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
 		<c:import url="/WEB-INF/views/includes/footer.jsp" />
 	</div>
 </body>
+
+<script>
+// 전역변수 history 배열에  localStorage에서 가져온 값을 담아놓음
+var history =JSON.parse(localStorage.getItem("history"))||[];
+
+window.onload = function() {  
+	getHistory();
+}
+
+// 게시글 제목 url 클릭 시 발생하는 이벤트함수 : localStorage에 접근 url 추가
+function setHistory(aTag)
+{
+	let url = aTag.href; 
+	history.push(url);
+	localStorage.setItem("history", JSON.stringify(history));
+	getHistory();
+}
+
+// history에 저장된 값을 화면에 표시 --> dom 사용
+function getHistory(){
+	// historyList 태그에 추가할 노드 생성
+	let parent = document.getElementById("historyList");
+	for (var i = history.length-1; i >= 0 ; i--){
+		let li = document.createElement("li");
+		let liNode = document.createTextNode("["+(i+1)+"] "+history[i]);
+		var att=document.createAttribute("style");
+		att.value="border:1px solid purple;";
+		li.setAttributeNode(att);
+		li.appendChild(liNode);
+		parent.appendChild(li);
+	}
+}
+
+// 히스토리 삭제
+function removeHistory(){
+	localStorage.clear();
+	history = [];
+	window.location.reload();
+}
+</script>
 </html>

@@ -4,6 +4,7 @@
 #board { margin:20px auto;	width:550px; }
 
 
+
 #search_form {
 	width:100%;
 	margin:50px auto 20px auto; 
@@ -150,3 +151,4 @@ div.pager  ul li a:visited,
 div.pager  ul li a:link,
 div.pager  ul li a:active	{ text-decoration: none; color:#555 }
 div.pager  ul li a:hover	{ text-decoration: none; color:#f00 }
+

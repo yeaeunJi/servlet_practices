@@ -20,6 +20,7 @@ public class GuestbookDao {
 
 		try {
 			conn = getConnection();
+			//conn.setReadOnly(false);
 			String sql = "insert into guestbook values(null, ? , ?, ?, date_format(now(), '%Y-%m-%d %H:%i:%s'));";
 			pstmt = conn.prepareStatement(sql);
 
@@ -50,6 +51,7 @@ public class GuestbookDao {
 
 		try {
 			conn = getConnection();
+			//conn.setReadOnly(true);
 			String sql = "select no, name, password, contents, date_format(reg_date, '%Y-%m-%d %H:%i:%s') as reg_date from guestbook order by no desc ;";
 			pstmt = conn.prepareStatement(sql);
 
@@ -92,6 +94,8 @@ public class GuestbookDao {
 
 		try {
 			conn = getConnection();
+			//conn.setReadOnly(false);
+
 			String sql = "delete from guestbook where no=? and password=?;";
 			pstmt = conn.prepareStatement(sql);
 
@@ -131,5 +135,23 @@ public class GuestbookDao {
 		}
 		return conn;
 	}
+	
+	// Mysql DB 이중화 사용한 connection
+//	public Connection getConnection()  throws SQLException {
+//		Connection conn = null;
+//		try {
+//			System.out.println("+++++++ DB 연결 시작 +++++++");
+////			Class.forName("com.mysql.jdbc.ReplicationDriver");
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//			System.out.println("- 드라이브 로딩 완료 ");
+//			conn = DriverManager.getConnection("jdbc:mysql://172.17.0.2:3306, 172.17.0.3:3306/webdb", "repluser", "replpw");
+//			System.out.println("+++++++ DB 연결 완료 +++++++");
+//	} catch (ClassNotFoundException e) {
+//		// TODO Auto-generated catch block
+//		System.out.println("+++++++ DB 연결 실패 +++++++");
+//		e.printStackTrace();
+//	}
+//	return conn;
+//}
 
 }

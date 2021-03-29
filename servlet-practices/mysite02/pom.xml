@@ -11,14 +11,28 @@
 	<packaging>war</packaging>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<!-- mysql replication jdbc driver -->
+		<!-- https://mvnrepository.com/artifact/replication/replication -->
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<!-- mysql jdbc driver -->
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.21</version>
 		</dependency>
-		
+		<!-- 
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+		</dependency> -->
+		<!-- Thanks for using https://jar-download.com -->
 		<!-- jstl -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

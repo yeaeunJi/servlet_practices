@@ -23,6 +23,24 @@ public class UserDao {
 		}
 		return conn;
 	}
+	
+	// Mysql DB 이중화 사용한 connection
+//	public Connection getConnection()  throws SQLException {
+//		Connection conn = null;
+//		try {
+//			System.out.println("+++++++ DB 연결 시작 +++++++");
+////			Class.forName("com.mysql.jdbc.ReplicationDriver");
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//			System.out.println("- 드라이브 로딩 완료 ");
+//			conn = DriverManager.getConnection("jdbc:mysql://172.17.0.2:3306, 172.17.0.3:3306/webdb", "repluser", "replpw");
+//			System.out.println("+++++++ DB 연결 완료 +++++++");
+//	} catch (ClassNotFoundException e) {
+//		// TODO Auto-generated catch block
+//		System.out.println("+++++++ DB 연결 실패 +++++++");
+//		e.printStackTrace();
+//	}
+//	return conn;
+//}
 
 	public UserVo findByNo(Long no ) {
 		UserVo userVo = null ;
@@ -31,7 +49,8 @@ public class UserDao {
 		ResultSet result = null;
 		try {
 			conn = getConnection();
-			String sql ="select no, name, email, gender from user where no = ?";
+			//conn.setReadOnly(true);
+			String sql ="select no, name, email, gender from user where no = ?;";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -73,6 +92,8 @@ public class UserDao {
 		ResultSet result = null;
 		try {
 			conn = getConnection();
+			//conn.setReadOnly(true);
+
 			String sql ="select no, name from user where email=? and password=?;";
 
 			pstmt = conn.prepareStatement(sql);
@@ -114,7 +135,9 @@ public class UserDao {
 
 		try {
 			conn = getConnection();
-			String sql = "update user set name = ?, gender=? where no = ?";
+			//conn.setReadOnly(false);
+
+			String sql = "update user set name = ?, gender=? where no = ?;";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -147,7 +170,9 @@ public class UserDao {
 
 		try {
 			conn = getConnection();
-			String sql = "update user set name = ?, gender=?, password=? where no = ?";
+			//conn.setReadOnly(false);
+
+			String sql = "update user set name = ?, gender=?, password=? where no = ?;";
 
 			pstmt = conn.prepareStatement(sql);
 
@@ -179,6 +204,8 @@ public class UserDao {
 
 		try {
 			conn = getConnection();
+			//conn.setReadOnly(false);
+
 			String sql = "insert " +
 					"into user " +
 					"values (null, ?, ?, ?, ?,now());";

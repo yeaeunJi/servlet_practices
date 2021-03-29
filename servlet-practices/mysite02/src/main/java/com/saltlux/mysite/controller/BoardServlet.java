@@ -104,11 +104,9 @@ public class BoardServlet extends HttpServlet {
 
 				// 부모 oNo가 maxONo 보다 작으면 oNo이상 +1
 				if (maxONo > oNo) {
-					// 답글에 답글이 달릴 경우에는 해당 답글 뒤의 order가 밀림
-					dao.updateOrderNo(gNo, oNo, no);
+					dao.updateOrderNo(gNo, oNo, no); // 답글에 답글이 달릴 경우에는 해당 답글 뒤의 order가 밀림
 				}
 
-				// 나는 oNo가 됨
 				oNo += 1;
 
 				// 새 게시글에 답글이 달린 경우에는
@@ -120,7 +118,7 @@ public class BoardServlet extends HttpServlet {
 
 				WebUtil.redirect(request.getContextPath()+"/board", request, response);
 			}
-		}else if ("search".equals(action)) {
+		} else if ("search".equals(action)) {
 			String keyword = request.getParameter("keyword") == null ? "":request.getParameter("keyword");
 			BoardDao dao = new BoardDao();
 			PageVo page = new PageVo();
@@ -265,7 +263,7 @@ public class BoardServlet extends HttpServlet {
 			request.setAttribute("list", list);
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
-		} 	 else if ("mulPageNext".equals(action)) {
+		} 	else if ("mulPageNext".equals(action)) {
 			Long endPage = request.getParameter("endPage") == null?1L:Long.parseLong(request.getParameter("endPage"));
 			Long totalPage = request.getParameter("totalPage") == null?1L:Long.parseLong(request.getParameter("totalPage"));
 
@@ -292,10 +290,7 @@ public class BoardServlet extends HttpServlet {
 			request.setAttribute("list", list);
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
-		} 
-		else if ("mulPageBefore".equals(action)) {
-			System.out.println("====== mulPageBefore ====");
-
+		} 	else if ("mulPageBefore".equals(action)) {
 			String keyword = request.getParameter("keyword") == null ? "":request.getParameter("keyword");
 			request.setAttribute("keyword", keyword);
 			Long startPage = request.getParameter("startPage") == null?1L:Long.parseLong(request.getParameter("startPage"));
@@ -319,7 +314,6 @@ public class BoardServlet extends HttpServlet {
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
 		} else if("movePage".equals(action)) { 			// 전체 게시판 조회
-
 			String keyword = request.getParameter("keyword") == null ? "":request.getParameter("keyword");
 			request.setAttribute("keyword", keyword);
 			BoardDao dao = new BoardDao();
@@ -349,13 +343,13 @@ public class BoardServlet extends HttpServlet {
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
 		}else { 			// 전체 게시판 조회
-
 			String keyword = request.getParameter("keyword") == null ? "":request.getParameter("keyword");
 			BoardDao dao = new BoardDao();
 			PageVo page = new PageVo();
 			Long curPage = 1L;
 			Long endPage =1L;
 			page = dao.paging(showNum, keyword);
+			System.out.println("page="+page);
 			Long startPage = 1L;
 
 			if (page.getTotal() - startPage < pageShowNum)	endPage = page.getTotal();
