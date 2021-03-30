@@ -8,34 +8,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.saltlux.mysite.db.Mysql;
 import com.saltlux.mysite.vo.GuestbookVo;
 
 
 public class GuestbookDao {
-
+	private static final Logger logger   = Logger.getLogger(GuestbookDao.class);
+	
 	public boolean insert(GuestbookVo vo) {
+		System.out.println("*************** insert start *************** ");
 		boolean result = false;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(false);
-			String sql = "insert into guestbook values(null, ? , ?, ?, date_format(now(), '%Y-%m-%d %H:%i:%s'));";
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(false);
+			String sql = "insert into guestbook (no, name,  password, contents, reg_date )  values(null, ? , ?, ?, date_format(now(), '%Y-%m-%d %H:%i:%s'));";
 			pstmt = conn.prepareStatement(sql);
 
 			pstmt.setString(1, vo.getName());
 			pstmt.setString(2, vo.getPassword());
 			pstmt.setString(3, vo.getContents());
+			System.out.println("sql : "+ pstmt.toString());
 			int count = pstmt.executeUpdate() ; 
 			result = count == 1 ? true:false;
-
+			System.out.println("*************** insert end *************** ");
 		} catch (SQLException e) { 
 			System.out.println("error:"+e);
 		} finally { // 자원 정리
 			try {
 				if(pstmt != null) pstmt.close();
-				if(conn != null) conn.close();
+				//if(conn != null) conn.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -44,14 +50,15 @@ public class GuestbookDao {
 	}
 
 	public List<GuestbookVo> findAll(){
+		System.out.println("*************** findAll start *************** ");
 		List<GuestbookVo> list = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null; 
 
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(true);
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(true);
 			String sql = "select no, name, password, contents, date_format(reg_date, '%Y-%m-%d %H:%i:%s') as reg_date from guestbook order by no desc ;";
 			pstmt = conn.prepareStatement(sql);
 
@@ -71,14 +78,14 @@ public class GuestbookDao {
 				vo.setRegDate(regDate);
 				list.add(vo);
 			}
-
+			System.out.println("*************** findAll end *************** ");
 		} catch (SQLException e) { 
 			System.out.println("error:"+e);
 		} finally { // 자원 정리
 			try {
 				if(result != null) result.close();
 				if(pstmt != null) pstmt.close();
-				if(conn != null) conn.close();
+				//if(conn != null) conn.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -88,13 +95,14 @@ public class GuestbookDao {
 	}
 
 	public boolean delete(GuestbookVo vo) {
+		System.out.println("*************** delete start *************** ");
 		boolean result = false;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(false);
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(false);
 
 			String sql = "delete from guestbook where no=? and password=?;";
 			pstmt = conn.prepareStatement(sql);
@@ -105,13 +113,13 @@ public class GuestbookDao {
 			int count = pstmt.executeUpdate() ;
 
 			result = count == 1 ? true:false;
-
+			System.out.println("*************** delete end *************** ");
 		} catch (SQLException e) { 
 			System.out.println("error:"+e);
 		} finally { // 자원 정리
 			try {
 				if(pstmt != null) pstmt.close();
-				if(conn != null) conn.close();
+				//if(conn != null) conn.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -119,39 +127,5 @@ public class GuestbookDao {
 		return result;
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
-
-		try {
-			// 1. JDBC 드라이버 로딩
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			// 2. 연결하기
-			String url = "jdbc:mysql://localhost:3306/webdb?characterEncoding=utf8&serverTimezone=UTC";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("error - "+e);
-		}
-		return conn;
-	}
-	
-	// Mysql DB 이중화 사용한 connection
-//	public Connection getConnection()  throws SQLException {
-//		Connection conn = null;
-//		try {
-//			System.out.println("+++++++ DB 연결 시작 +++++++");
-////			Class.forName("com.mysql.jdbc.ReplicationDriver");
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			System.out.println("- 드라이브 로딩 완료 ");
-//			conn = DriverManager.getConnection("jdbc:mysql://172.17.0.2:3306, 172.17.0.3:3306/webdb", "repluser", "replpw");
-//			System.out.println("+++++++ DB 연결 완료 +++++++");
-//	} catch (ClassNotFoundException e) {
-//		// TODO Auto-generated catch block
-//		System.out.println("+++++++ DB 연결 실패 +++++++");
-//		e.printStackTrace();
-//	}
-//	return conn;
-//}
 
 }

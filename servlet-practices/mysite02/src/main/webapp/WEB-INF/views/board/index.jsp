@@ -155,9 +155,10 @@ background-color: #777799;;
 
 <script>
 // 전역변수 history 배열에  localStorage에서 가져온 값을 담아놓음
-var history =JSON.parse(localStorage.getItem("history"))||[];
+var history = [];
 
 window.onload = function() {  
+	history =JSON.parse(localStorage.getItem("history"))||[];
 	getHistory();
 }
 
@@ -175,6 +176,7 @@ function getHistory(){
 	// historyList 태그에 추가할 노드 생성
 	let parent = document.getElementById("historyList");
 	for (var i = history.length-1; i >= 0 ; i--){
+		
 		let li = document.createElement("li");
 		let liNode = document.createTextNode("["+(i+1)+"] "+history[i]);
 		var att=document.createAttribute("style");
@@ -186,10 +188,9 @@ function getHistory(){
 }
 
 // 히스토리 삭제
-function removeHistory(){
-	localStorage.clear();
-	history = [];
-	window.location.reload();
+function removeHistory(){	
+	localStorage.removeItem('history');
+	//window.location.reload();
 }
 </script>
 </html>

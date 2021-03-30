@@ -1,55 +1,30 @@
 package com.saltlux.mysite.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
+import com.saltlux.mysite.db.Mysql;
 import com.saltlux.mysite.vo.UserVo;
 
 public class UserDao {
-	private Connection getConnection() throws SQLException {
-		Connection conn = null;
 
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			String url = "jdbc:mysql://localhost:3306/webdb?characterEncoding=utf8&serverTimezone=UTC";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("error - "+e);
-		}
-		return conn;
-	}
+	//logger 
+	private static final Logger logger   = Logger.getLogger(UserDao.class);
+ 
 	
-	// Mysql DB 이중화 사용한 connection
-//	public Connection getConnection()  throws SQLException {
-//		Connection conn = null;
-//		try {
-//			System.out.println("+++++++ DB 연결 시작 +++++++");
-////			Class.forName("com.mysql.jdbc.ReplicationDriver");
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			System.out.println("- 드라이브 로딩 완료 ");
-//			conn = DriverManager.getConnection("jdbc:mysql://172.17.0.2:3306, 172.17.0.3:3306/webdb", "repluser", "replpw");
-//			System.out.println("+++++++ DB 연결 완료 +++++++");
-//	} catch (ClassNotFoundException e) {
-//		// TODO Auto-generated catch block
-//		System.out.println("+++++++ DB 연결 실패 +++++++");
-//		e.printStackTrace();
-//	}
-//	return conn;
-//}
-
 	public UserVo findByNo(Long no ) {
+		System.out.println("*************** user 번호로 사용자 정보 조회 시작 *************** ");
 		UserVo userVo = null ;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null;
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(true);
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(true);
 			String sql ="select no, name, email, gender from user where no = ?;";
 
 			pstmt = conn.prepareStatement(sql);
@@ -68,14 +43,14 @@ public class UserDao {
 				userVo.setEmail(email);
 				userVo.setGender(gender);
 			}
-
+			System.out.println("*************** user 번호로 사용자 정보 조회 완료 *************** ");
 		} catch(SQLException e) {
 			System.out.println("error-"+e);
 
 		} finally {
 			try {
 				if(result!=null) result.close();
-				if(conn!=null) conn.close();
+				//if(conn!=null) conn.close();
 				if(pstmt != null) pstmt.close();
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
@@ -86,13 +61,14 @@ public class UserDao {
 	}
 
 	public UserVo findByEmailAndPassword(UserVo vo ) {
+		System.out.println("*************** 로그인 시작 *************** ");
 		UserVo userVo = null ;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet result = null;
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(true);
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(true);
 
 			String sql ="select no, name from user where email=? and password=?;";
 
@@ -111,14 +87,14 @@ public class UserDao {
 				userVo.setName(name);
 				userVo.setNo(no);
 			}
-
+			System.out.println("*************** 로그인 완료 *************** ");
 		} catch(SQLException e) {
 			System.out.println("error-"+e);
 
 		} finally {
 			try {
 				if(result!=null) result.close();
-				if(conn!=null) conn.close();
+				//if(conn!=null) conn.close();
 				if(pstmt != null) pstmt.close();
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
@@ -129,13 +105,14 @@ public class UserDao {
 	}
 
 	public boolean updateNameAndGender(UserVo vo) {
+		System.out.println("*************** updateNameAndGender 시작 *************** ");
 		boolean result = false;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(false);
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(false);
 
 			String sql = "update user set name = ?, gender=? where no = ?;";
 
@@ -148,13 +125,14 @@ public class UserDao {
 
 			int count = pstmt.executeUpdate();
 			result = count == 1;
+			System.out.println("*************** updateNameAndGender end *************** ");
 			return result;
 		} catch(SQLException e) {
 			System.out.println("error-"+e);
 			return result;
 		} finally {
 			try {
-				if(conn!=null) conn.close();
+				//if(conn!=null) conn.close();
 				if(pstmt != null) pstmt.close();
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
@@ -164,13 +142,14 @@ public class UserDao {
 	}
 
 	public boolean updateAll(UserVo vo) {
+		System.out.println("*************** updateAll start *************** ");
 		boolean result = false;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(false);
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(false);
 
 			String sql = "update user set name = ?, gender=?, password=? where no = ?;";
 
@@ -183,13 +162,14 @@ public class UserDao {
 
 			int count = pstmt.executeUpdate();
 			result = count == 1;
+			System.out.println("*************** updateAll start *************** ");
 			return result;
 		} catch(SQLException e) {
 			System.out.println("error-"+e);
 			return result;
 		} finally {
 			try {
-				if(conn!=null) conn.close();
+				//if(conn!=null) conn.close();
 				if(pstmt != null) pstmt.close();
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
@@ -198,16 +178,17 @@ public class UserDao {
 		}
 	}
 	public boolean insert(UserVo vo) {
+		System.out.println("*************** insert start *************** ");
 		boolean result = false;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
-			//conn.setReadOnly(false);
+			conn = Mysql.getConnection();
+			if(Mysql.useReplicated) conn.setReadOnly(false);
 
 			String sql = "insert " +
-					"into user " +
+					"into user ( no, name, email, password, gender, join_date) " +
 					"values (null, ?, ?, ?, ?,now());";
 
 			pstmt = conn.prepareStatement(sql);
@@ -219,18 +200,18 @@ public class UserDao {
 
 			int count = pstmt.executeUpdate();
 			result = count == 1;
+			System.out.println("*************** insert end *************** ");
 			return result;
 		} catch(SQLException e) {
 			System.out.println("error-"+e);
 			return result;
 		} finally {
 			try {
-				if(conn!=null) conn.close();
+				//if(conn!=null) conn.close();
 				if(pstmt != null) pstmt.close();
 			} catch (SQLException e) {
 				System.out.println("error-"+e);
 			}
-
 		}
 	}
 }

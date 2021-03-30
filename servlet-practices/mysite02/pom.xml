@@ -11,11 +11,26 @@
 	<packaging>war</packaging>
 
 	<dependencies>
+	<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.17</version>
+</dependency>
+	
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 			<version>1.1.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+<dependency>
+    <groupId>org.mongodb</groupId>
+    <artifactId>mongo-java-driver</artifactId>
+    <version>3.4.3</version>
+</dependency>
+		
+		
 		<!-- mysql replication jdbc driver -->
 		<!-- https://mvnrepository.com/artifact/replication/replication -->
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
@@ -26,12 +41,12 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.21</version>
 		</dependency>
-		<!-- 
+		   		<!-- 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.38</version>
-		</dependency> -->
+			<version>5.1.6</version> 
+		</dependency>  -->
 		<!-- Thanks for using https://jar-download.com -->
 		<!-- jstl -->
 		<dependency>
