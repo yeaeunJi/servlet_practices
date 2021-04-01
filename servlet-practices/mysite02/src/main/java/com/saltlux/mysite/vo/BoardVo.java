@@ -1,6 +1,17 @@
 package com.saltlux.mysite.vo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BoardVo {
+	private String _id = "";
+	public String get_id() {
+		return _id;
+	}
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
 	private Long no;
 	private String title;
 	private String writer;
@@ -81,15 +92,47 @@ public class BoardVo {
 		this.delFlag = delFlag;
 	}
 	
+	
+
 	@Override
 	public String toString() {
-		return "BoardVo [no=" + no + ", title=" + title + ", writer=" + writer + ", userNo=" + userNo + ", contents="
-				+ contents + ", count=" + count + ", regDate=" + regDate + ", gNo=" + gNo + ", oNo=" + oNo + ", depth="
-				+ depth + ", delFlag=" + delFlag + "]";
+		return "BoardVo [_id=" + _id + ", no=" + no + ", title=" + title + ", writer=" + writer + ", userNo=" + userNo
+				+ ", contents=" + contents + ", count=" + count + ", regDate=" + regDate + ", gNo=" + gNo + ", oNo="
+				+ oNo + ", depth=" + depth + ", delFlag=" + delFlag + "]";
 	}
-
+	public Map<String, Object> voToMap(){
+		Object[] values = {no, title, userNo, contents, count, regDate, gNo, oNo, depth};
+		String[] lists = {"no", "title", "userNo", "contents", "count", "regDtae", "gNo", "oNo", "depth"};
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		for(int i =0; i<lists.length; i++) {
+			map.put(lists[i], values[i]);
+		}
+		return map;
+	}
 	
+	public BoardVo mapToVo(HashMap<String, Object> map){
+		BoardVo vo = new BoardVo();
+		return vo;
+	}
 	
+//	public Map<String, Object> voToMap(){
+//	Map<String, Object> map = new HashMap<String, Object>();
+//	int length = this.getClass().getDeclaredFields().length;
+//
+//	Field[] fields = this.getClass().getDeclaredFields() ;
+//	for(int i=1; i < length; i++){
+//		try {
+//			fields[i].setAccessible(true);
+//			String name = fields[i].getName();
+//			Object obj =  fields[i].get(name);
+//			map.put(name, obj);
+//		} catch (IllegalArgumentException | IllegalAccessException e) {
+//			System.out.println("BoardVo :: voToMap error : "+e.getMessage());
+//		}		
+//	}
+//	return map;
+//}
 	
 	
 }

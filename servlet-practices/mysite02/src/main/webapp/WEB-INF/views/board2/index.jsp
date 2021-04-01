@@ -25,19 +25,12 @@ background-color: #777799;;
 		<c:import url="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form id="search_form"
-					action="${pageContext.request.contextPath }/board2" method="post">
-					<input type='hidden' name='a' value='search' /> <input type="text"
-						id="kwd" name="keyword" value="${keyword}"> <input type="submit"
-						value="찾기">
-					<h6>* 제목과 내용에서 해당 키워드를 검색합니다.</h6>
-				</form>
+				
 				<table class="tbl-ex">
 					<tr>
 						<th>번호</th>
 						<th>제목</th>
-						<th>글쓴이</th>
-						<th>조회수</th>
+						<th>글쓴이</th>						
 						<th>작성일</th>
 						<th>&nbsp;</th>
 					</tr>
@@ -66,7 +59,6 @@ background-color: #777799;;
 									</c:choose>
 							</a></td>
 							<td>${vo.writer }</td>
-							<td>${vo.count }</td>
 							<td>${vo.regDate }</td>
 							<c:if test="${!empty authUser  && authUser.no == vo.userNo}">
 								<td><a

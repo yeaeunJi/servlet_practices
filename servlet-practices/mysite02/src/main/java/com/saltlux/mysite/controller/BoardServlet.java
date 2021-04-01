@@ -114,7 +114,7 @@ public class BoardServlet extends HttpServlet {
 				vo.setDepth(depth);
 				vo.setoNo(oNo);
 				vo.setTitle(title);
-				dao. replyInsert(vo);
+				dao.replyInsert(vo);
 
 				WebUtil.redirect(request.getContextPath()+"/board", request, response);
 			}

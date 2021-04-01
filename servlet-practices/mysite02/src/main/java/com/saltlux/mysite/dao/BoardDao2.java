@@ -1,532 +1,258 @@
 package com.saltlux.mysite.dao;
 
-import java.sql.Connection;
+import static com.mongodb.client.model.Projections.excludeId;
+import static com.mongodb.client.model.Projections.fields;
+import static com.mongodb.client.model.Projections.include;
+
+import java.math.MathContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.and;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.saltlux.mysite.db.Mongo;
 import com.saltlux.mysite.vo.BoardVo;
+import com.saltlux.mysite.vo.BoardVo2;
 import com.saltlux.mysite.vo.PageVo;
 
 public class BoardDao2 {
 	//private static final Logger logger   = Logger.getLogger(BoardDao.class);
-	
-	private  Long  getNewGNo() {
+
+	public  int  getNewGNo() {
 		System.out.println("*************** getNewGNo start *************** ");
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		Long max = 0L;
-//		try {
-			conn = Mongo.getConnection();
-			
-			String sql = "select ifnull(max(group_no),0)+1 as max from board;  ";
-			//pstmt = conn.prepareStatement(sql);
-		//	result = pstmt.executeQuery();
-		//	System.out.println(pstmt.toString());
-		//	result.next();
-		//	max = result.getLong(1); 
-			System.out.println("*************** getNewGNo end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("getNewGNo error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//				//if(conn!=null) conn.close();
-//				if(result!=null) result.close();
-//			} catch (SQLException e) {
-//				System.out.println("여기!!!");
-//				e.printStackTrace();
-//			}
-//		}
-		return max;
+		MongoDatabase db = null;
+		db = Mongo.getDatabase();
+		int max = 0;
+
+		MongoCollection<Document> collection = db.getCollection("board");
+
+		Document query = new Document("gNo", -1);
+		ArrayList<Object> results = new ArrayList<>();
+		collection.find().sort(query).limit(1).into(results);
+
+		for(Object doc: results) {
+			Document doc1 = (Document)doc;
+			max = doc1.getInteger("groupNo");
+			System.out.println(doc1.get("groupNo"));
+		}
+
+		System.out.println("*************** getNewGNo end *************** ");
+		return max+1;
 	}
 
 	// insert 
-	public boolean insert(BoardVo vo) {
+	// IllegalArgumentException, MongoWriteException, MongoWriteConcernException, MongoException ,.. 
+	public boolean insert(BoardVo2 vo) {
 		System.out.println("*************** insert start *************** ");
 		boolean result = false;
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-//		try {
-			conn = Mongo.getConnection();
-			Long gNo = getNewGNo();
-			
-			String sql = "insert"	+ 
-					"	into board (no, title, contents, user_no, count, reg_date, group_no, order_no, depth, del_flag) "	+
-					"   values (null, ?, ?,?, 0, now(), ?, 1 , 0, 'F');";
-			
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setString(1, vo.getTitle());
-//			pstmt.setString(2, vo.getContents());
-//			pstmt.setLong(3,  vo.getUserNo());
-//			pstmt.setLong(4, gNo );
-//			System.out.println(pstmt.toString());
-//			int count = pstmt.executeUpdate();
-//			result = count == 1;
+		MongoDatabase db = null;
+		try {
+			db = Mongo.getDatabase();
+
+			if (vo.getgNo() == 0) {
+				int gNo = getNewGNo();
+				vo.setgNo(gNo);
+			}
+
+			MongoCollection<Document> boards = db.getCollection("board");
+			Document doc = new Document(vo.voToMap());
+			System.out.println("insert한 정보 : "+doc.toJson());
+
+			boards.insertOne(doc);
 			System.out.println("*************** insert end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("insert error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null) pstmt.close();
-//				//if(conn!=null) conn.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
-		return result;
-	}
-
-	public boolean replyInsert(BoardVo vo) {
-		System.out.println("*************** replyInsert start *************** ");
-		boolean result = false;
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-//		try {
-			conn = Mongo.getConnection();
-			
-			String sql = "insert"	+ 
-					"	into board (no, title, contents, user_no, count, reg_date, group_no, order_no, depth, del_flag) "	+
-					"   values (null, ?, ?,?, 0, now(), ?, ? , ?, 'F');";
-//
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setString(1, vo.getTitle());
-//			pstmt.setString(2, vo.getContents());
-//			pstmt.setLong(3,  vo.getUserNo());
-//			pstmt.setLong(4, vo.getgNo());
-//			pstmt.setLong(5,  vo.getoNo());
-//			pstmt.setLong(6, vo.getDepth());
-//			System.out.println(pstmt.toString());
-//			int count = pstmt.executeUpdate();
-//			result = count == 1;
-			System.out.println("*************** replyInsert end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("replyInsert error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null) pstmt.close();
-//				//if(conn!=null) conn.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
+		} catch (Exception e) {
+			System.out.println("insert error-"+e);
+		} 				
 		return result;
 	}
 
 
-	public boolean updateOrderNo(Long gNo, Long oNo, Long no) {
+	public boolean updateOrderNo(int gNo, int oNo) {
 		System.out.println("*************** updateOrderNo start *************** ");
-		boolean result = false;
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		String sql = "";
-//		try {
-			conn = Mongo.getConnection();
-			
-			sql = "update board set order_no= order_no+1 where group_no = ? and order_no > ? and no > 0;";
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setLong(1, gNo);
-//			pstmt.setLong(2, oNo);
-//			System.out.println(pstmt.toString());
-//			int count = pstmt.executeUpdate();
-//			result = count >= 1;
-			System.out.println("*************** updateOrderNo end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("updateOrderNo error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null) pstmt.close();
-//				//if(conn!=null) conn.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
-		return result;
+		MongoDatabase db = Mongo.getDatabase();
+		MongoCollection<Document> boards = db.getCollection("board");
+		UpdateResult updateResult= boards.updateMany(gt("oNo", oNo), Updates.inc("oNo", 1));
+		System.out.println("*************** updateOrderNo end *************** ");
+		return updateResult.getModifiedCount() > 0 ?true:false;
 	}
 
-	public List<BoardVo> findAll(PageVo pageVo, String keyword){
+	public List<BoardVo2> findAll(PageVo pageVo){
 		System.out.println("*************** findAll start *************** ");
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		List<BoardVo> list = new ArrayList<BoardVo>();
+		MongoDatabase db = Mongo.getDatabase();			
+		ArrayList<Object> results = new ArrayList<>();
+		ArrayList<BoardVo2> list = new ArrayList<>();
+		try {
+			MongoCollection<Document> boards = db.getCollection("board");
+			Document sort = new Document().append("gNo", -1).append("oNo", 1);
+			int offset = Integer.parseInt(pageVo.getStart().toString());
+			int limit = Integer.parseInt(pageVo.getShowNum().toString());
 
-//		try {
-			conn = Mongo.getConnection();
-			
-			String sql = "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth, del_flag  "
-					+ "from board where contents like ? or title like ? order by group_no desc, order_no limit ?,?;";
-////			pstmt = conn.prepareStatement(sql);
-////			pstmt.setString(1,"%"+keyword+"%" );
-////			pstmt.setString(2,"%"+keyword+"%" );
-////			pstmt.setLong(3, pageVo.getStart());
-////			pstmt.setLong(4, pageVo.getShowNum());
-////			System.out.println(pstmt.toString());
-////			result = pstmt.executeQuery();
-////			while(result.next()) {
-////				BoardVo vo = new BoardVo();
-////				vo.setNo(result.getLong(1));
-////				vo.setTitle(result.getString(2));
-////				vo.setWriter(result.getString(3));
-////				vo.setUserNo(result.getLong(4));
-////				vo.setCount(result.getLong(5));
-////				vo.setRegDate(result.getString(6));
-////				vo.setgNo(result.getLong(7));
-////				vo.setoNo(result.getLong(8));
-////				vo.setDepth(result.getLong(9));
-////				vo.setDelFlag(result.getString(10).charAt(0));
-////				list.add(vo);
-//			}
-//			System.out.println("*************** findAll end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("findAll error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//				//if(conn!=null) conn.close();
-//				if(result!=null) result.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
+			boards.find().sort(sort).skip(offset).limit(limit).into(results);
+			for (Object obj : results) {
+				System.out.print("*");
+				BoardVo2 vo = new BoardVo2();
+				Document doc = (Document) obj;
+				vo.setNo(doc.getObjectId("_id").toString());
+				vo.setTitle(doc.getString("title"));
+				vo.setContents(doc.getString("contents"));
+				vo.setRegDate(doc.getString("regDate"));
+				vo.setUserNo(doc.getInteger("userNo"));
+				vo.setgNo(doc.getInteger("gNo"));
+				vo.setoNo(doc.getInteger("oNo"));
+				vo.setDepth(doc.getInteger("depth"));
+				System.out.println("- "+vo.toString());
+				list.add(vo);
+			}
+		}catch(IllegalArgumentException e) {
+			System.out.println("IllegalArgumentException  : "+e.getMessage());
+		}
+		catch(Exception e) {
+			System.out.println("findAll Exception : "+e.getMessage());
+		}	
 		return list;
 	}
 
-	public PageVo paging(Long shownum, String keyword){
+	public PageVo paging(long shownum){
 		System.out.println("*************** paging start *************** ");
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		PageVo page = null;
-//		try {
-			conn = Mongo.getConnection();
-		
-			String sql =  "SELECT count(no) as total, CASE WHEN ceiling(count(no)/?)  = 0 THEN 1 ELSE ceiling(count(no)/?)  END AS totalpage FROM board where contents like ? or title like ?;";
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setLong(1,shownum );
-//			pstmt.setLong(2,shownum );
-//			pstmt.setString(3,"%"+keyword+"%" );
-//			pstmt.setString(4,"%"+keyword+"%" );
-//			System.out.println(pstmt.toString());
-//			result = pstmt.executeQuery();
-//
-//			Long totalPage = 1L;
-//			Long totalCount = 0L;
-//			page = new PageVo();
-//
-//			while(result.next()) {
-//				totalCount = result.getLong(1);
-//				totalPage = result.getLong(2);
-//			}
-//
-//			page.setTotalCount(totalCount);
-//			page.setTotal(totalPage);
-			System.out.println("*************** paging end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("paging error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//				//if(conn!=null) conn.close();
-//				if(result!=null) result.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
+		String sql =  "SELECT count(no) as total, CASE WHEN ceiling(count(no)/?)  = 0 THEN 1 ELSE ceiling(count(no)/?)  END AS totalpage";
+
+		MongoDatabase db = Mongo.getDatabase();
+		MongoCollection<Document> collection = db.getCollection("board");
+		PageVo page = new  PageVo();
+		long totalCount = collection.count();
+		long totalPage = (long) (Math.ceil(totalCount/(float)shownum));
+
+		page.setTotalCount(totalCount);
+		System.out.println("showNum="+shownum+", totalCount="+totalCount+", totalPage="+totalPage);
+		page.setTotal(totalPage==0?1:totalPage);
+		System.out.println("*************** paging start *************** ");
 		return page;
 	}
 
-	public List<BoardVo> search(String keyword){
-		System.out.println("*************** search start *************** ");
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		List<BoardVo> list = new ArrayList<BoardVo>();
 
-//		try {
-			conn = Mongo.getConnection();
-	
-//			String sql =  "select no, title, (select name from user where no=board.user_no) as writer, user_no, count, reg_date, group_no, order_no, depth,  del_flag  from board "+
-//					" where contents like ? or title like ?; ";
-//			pstmt = conn.prepareStatement(sql);
-//
-//			pstmt.setString(1, "%"+keyword+"%");
-//			pstmt.setString(2, "%"+keyword+"%");
-//			System.out.println(pstmt.toString());
-//			result = pstmt.executeQuery();
-//
-//			while(result.next()) {
-//				BoardVo vo = new BoardVo();
-//				vo.setNo(result.getLong(1));
-//				vo.setTitle(result.getString(2));
-//				vo.setWriter(result.getString(3));
-//				vo.setUserNo(result.getLong(4));
-//				vo.setCount(result.getLong(5));
-//				vo.setRegDate(result.getString(6));
-//				vo.setgNo(result.getLong(7));
-//				vo.setoNo(result.getLong(8));
-//				vo.setDepth(result.getLong(9));
-//				vo.setDelFlag(result.getString(10).charAt(0));
-//
-//				list.add(vo);
-//			}
-//			System.out.println("*************** search end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("search error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//				//if(conn!=null) conn.close();
-//				if(result!=null) result.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-		return list;
-	}
-
-	// findOne
-	public BoardVo findOne(Long no){
+	public BoardVo2 findOne(String no){
 		System.out.println("*************** findOne start *************** ");
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		BoardVo vo = new BoardVo();
+		MongoDatabase db = null;
+		db = Mongo.getDatabase();
+		MongoCollection<Document> collection = db.getCollection("board");
+		BoardVo2 vo = new BoardVo2();
 
-//		try {
-			conn = Mongo.getConnection();
-//			String sql = "select no, title, contents, user_no, (select name from user where no=board.user_no) as writer, count, reg_date, depth, group_no, order_no from board " 
-//					+" where no = ? and del_flag = 'F' ;";
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setLong(1, no);
-//			System.out.println(pstmt.toString());
-//			result = pstmt.executeQuery();
-//
-//
-//			result.next();
-//			vo.setNo(result.getLong(1));
-//			vo.setTitle(result.getString(2));
-//			vo.setContents(result.getString(3));
-//			vo.setUserNo(result.getLong(4));
-//			vo.setWriter(result.getString(5));
-//			vo.setCount(result.getLong(6));
-//			vo.setRegDate(result.getString(7));
-//			vo.setDepth(result.getLong(8));
-//			vo.setgNo(result.getLong(9));
-//			vo.setoNo(result.getLong(10));
-//			System.out.println("*************** findOne end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("findOne error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//				//if(conn!=null) conn.close();
-//				if(result!=null) result.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
+		ObjectId id = new ObjectId(no);
+		Document query = new Document().append("_id", id );
+		ArrayList<Object> results = new ArrayList<>();
+		collection.find(query).into(results);
+
+		for (Object obj : results) {
+			Document doc = (Document) obj;
+			vo.setNo(doc.getObjectId("_id").toString());
+			vo.setTitle(doc.getString("title"));
+			vo.setContents(doc.getString("contents"));
+			vo.setRegDate(doc.getString("regDate"));
+			vo.setUserNo(doc.getInteger("userNo"));
+			vo.setgNo(doc.getInteger("gNo"));
+			vo.setoNo(doc.getInteger("oNo"));
+			vo.setDepth(doc.getInteger("depth"));
+		}
+		System.out.println("조회된 게시판 정보 : "+vo.toString());
 		return vo;
 	}
 
-	// update
-	public boolean update(BoardVo vo) {
+
+	public boolean update(BoardVo2 vo) {
 		System.out.println("*************** update start *************** ");
-		boolean result = false;
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		String sql = "";
-//		try {
-			conn = Mongo.getConnection();
-//			sql = "update board set title=?, contents=? where no = ?;";
-//
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setString(1, vo.getTitle());
-//			pstmt.setString(2, vo.getContents());
-//			pstmt.setLong(3,  vo.getNo());
-//			System.out.println(pstmt.toString());
-//			int count = pstmt.executeUpdate();
-//			result = count == 1;
-//			System.out.println("*************** update end *************** ");
-//		} catch (SQLException e) {
-//			System.out.println("update error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null) pstmt.close();
-//				//if(conn!=null) conn.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
-		return result;
+		MongoDatabase db = Mongo.getDatabase();
+		MongoCollection<Document> boards = db.getCollection("board");
+		System.out.println("변경할 데이터 : "+ vo.toString());
+		Document updateValue = new Document("title", vo.getTitle() ).append("contents", vo.getContents());
+		Document updateDoc = new Document("$set",updateValue);
+		ObjectId id = new ObjectId(vo.getNo());
+		Document query = new Document().append("_id", id );
+		UpdateResult updateResult= boards.updateOne(query, updateDoc);
+		System.out.println("*************** update end *************** ");
+		return updateResult.getModifiedCount() > 0 ?true:false;
 	}
 
-	// update count
-	public boolean updateCount(BoardVo vo) {
-		boolean result = false;
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		String sql = "";
-//		try {
-			conn = Mongo.getConnection();
-//			sql = "update board set count=? where no = ?;";
-//
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setLong(1,  vo.getCount());
-//			pstmt.setLong(2,  vo.getNo());
-//			System.out.println(pstmt.toString());
-//			int count = pstmt.executeUpdate();
-//			result = count == 1;
-//
-//		} catch (SQLException e) {
-//			System.out.println("updateCount error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null) pstmt.close();
-//				//if(conn!=null) conn.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
+	public boolean delete(String no) {
+		System.out.println("*************** delete start *************** ");
+		MongoDatabase db = Mongo.getDatabase();
+		MongoCollection<Document> collection = db.getCollection("board");
 
-		return result;
+		ObjectId id = new ObjectId(no);
+		Document query = new Document().append("_id", id );
+		ArrayList<Object> results = new ArrayList<>();
+		DeleteResult queryResult =  collection.deleteOne(query);
+		System.out.println("*************** delete end *************** ");
+		return queryResult.getDeletedCount() == 1?true:false;
 	}
 
-	public boolean delete(BoardVo vo) {
-		boolean result = false;
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
+	public boolean isGetChild(BoardVo2 vo) {
+		//		String sql = "select count(*)  from board where depth > ? and order_no = ?+1 and group_no=?;";
+		// 나와 gNo가 같고 순서가 나보다 크고 depth가 나보다 큰애가 하나라도 있으면 true
+		System.out.println("*************** getChildCount start *************** ");
+		MongoDatabase db =Mongo.getDatabase();
+		int count = 0;
 
-//		try {
-			conn = Mongo.getConnection();
-//			String sql = "delete from board where no = ? ;";
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setLong(1,  vo.getNo());
-//			System.out.println(pstmt.toString());
-//			int count = pstmt.executeUpdate();
-//			result = count == 1;
-//
-//		} catch (SQLException e) {
-//			System.out.println("delete error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null) pstmt.close();
-//				//if(conn!=null) conn.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-
-		return result;
+		MongoCollection<Document> collection = db.getCollection("board");
+		//		Document query = new Document("d", );
+		ArrayList<Object> results = new ArrayList<>();
+		collection.find(and(gt("depth", vo.getDepth()), eq("oNo", vo.getoNo()+1), eq("gNo", vo.getgNo()))).into(results);
+		count = results.size();
+		return count>0?true:false;
 	}
 
-	public boolean getChildCount(BoardVo vo) {
-		boolean result = true;
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-//		try {
-			conn = Mongo.getConnection();
-//			String sql = "select count(*)  from board where depth > ? and order_no = ?+1 and group_no=?;";
-//			pstmt = conn.prepareStatement(sql);
-//			//pstmt.setLong(1,  vo.getNo());
-//			pstmt.setLong(1, vo.getDepth());
-//			pstmt.setLong(2, vo.getoNo());
-//			pstmt.setLong(3, vo.getgNo());
-//			System.out.println(pstmt.toString());
-//			rs = pstmt.executeQuery();
-//
-//			rs.next();
-//			int count = 0;
-//			count = rs.getInt(1);
-//			result = count>0?true:false;
-//
-//		} catch (SQLException e) {
-//			System.out.println("getChildCount error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//				//if(conn!=null) conn.close();
-//				if(rs!=null) rs.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-		return result;
+	public BoardVo2 getParentInfo(String no) {
+		System.out.println("*************** getParentInfo start *************** ");
+		MongoDatabase db = null;
+		db = Mongo.getDatabase();
+		MongoCollection<Document> collection = db.getCollection("board");
+		BoardVo2 vo = new BoardVo2();
+		ObjectId id = new ObjectId(no);
+		Document filter = new Document().append("_id", id );
+		ArrayList<Object> results = new ArrayList<>();
+		collection.find(filter).projection(fields(include("gNo", "oNo", "depth"), excludeId())).into(results);
 
-	}
-
-
-
-	public BoardVo getParentInfo(Long no) {
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		BoardVo vo = new BoardVo();
-
-//		try {
-			conn = Mongo.getConnection();
-//			String sql = "select group_no, order_no, depth from board where no=?;";
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setLong(1, no);
-//			System.out.println(pstmt.toString());
-//			result = pstmt.executeQuery();
-//
-//			result.next();
-//			vo.setgNo(result.getLong(1));
-//			vo.setoNo(result.getLong(2));
-//			vo.setDepth(result.getLong(3));
-//
-//		} catch (SQLException e) {
-//			System.out.println("getParentInfo error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//				//if(conn!=null) conn.close();
-//				if(result!=null) result.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
+		for (Object obj : results) {
+			Document doc = (Document) obj;
+			vo.setNo(no);
+			vo.setgNo(doc.getInteger("gNo"));
+			vo.setoNo(doc.getInteger("oNo"));
+			vo.setDepth(doc.getInteger("depth"));
+		}
+		System.out.println("조회된 부모 게시글의 정보 : "+vo.toString());
 		return vo;
 	}
 
-	public Long getMaxONo(Long gNo) {
-		MongoDatabase conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet result = null;
-		Long max = 0L;
-//		try {
-			conn = Mongo.getConnection();
-//			String sql = "select ifnull(max(order_no),0)+1 as max from board where group_no = ?;  ";
-//			pstmt = conn.prepareStatement(sql);
-//			pstmt.setLong(1, gNo);
-//			System.out.println(pstmt.toString());
-//			result = pstmt.executeQuery();
-//
-//			result.next();
-//			max = result.getLong(1); 
-//
-//		} catch (SQLException e) {
-//			System.out.println("getMaxONo error-"+e);
-//		} finally {
-//			try {
-//				if(pstmt!=null)	pstmt.close();
-//			//	if(conn!=null) conn.close();
-//				if(result!=null) result.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
+	public int getMaxONo(int gNo) {
+		//			String sql = "select ifnull(max(order_no),0)+1 as max from board where group_no = ?;  ";
+		System.out.println("*************** getMaxONo start *************** ");
+		MongoDatabase db = null;
+		db = Mongo.getDatabase();
+		int max = 0;
+
+		MongoCollection<Document> collection = db.getCollection("board");
+		Document filter = new Document("gNo", gNo);
+		Document sort = new Document("oNo", -1);
+		ArrayList<Object> results = new ArrayList<>();
+		collection.find(filter).sort(sort).limit(1).into(results);
+
+		for(Object doc: results) {
+			Document doc1 = (Document)doc;
+			max = doc1.getInteger("oNo");
+			System.out.println(doc1.get("oNo"));
+		}
+
+		System.out.println("*************** getMaxONo end *************** ");
 		return max;
 	}
 }
