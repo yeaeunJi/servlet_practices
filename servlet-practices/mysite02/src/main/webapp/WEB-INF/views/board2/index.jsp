@@ -139,6 +139,14 @@ background-color: #777799;;
 		<c:import url="/WEB-INF/views/includes/footer.jsp" />
 	</div>
 </body>
+<script>
+window.onload = function() {
+	let msg = '${msg}';
+	if (msg != ''){
+		alert(msg);
+	}
 
+}
+</script>
 
 </html>

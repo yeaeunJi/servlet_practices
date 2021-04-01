@@ -16,8 +16,8 @@ import com.saltlux.web.mvc.WebUtil;
 
 public class BoardServlet2 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Long showNum = 2L;
-	private Long pageShowNum = 2L;
+	private Long showNum = 10L;
+	private Long pageShowNum = 5L;
 	private BoardDao2 dao = new BoardDao2();
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -179,8 +179,10 @@ public class BoardServlet2 extends HttpServlet {
 			if (!dao.isGetChild(vo)	) {
 				dao.delete(no);
 				dao.updateOrderNo(vo.getgNo(), vo.getoNo(), -1);
+				WebUtil.redirect(request.getContextPath()+"/board2", request, response);
+			}else {
+				WebUtil.redirect(request.getContextPath()+"/board2?msg=false", request, response);
 			}
-			WebUtil.redirect(request.getContextPath()+"/board2", request, response);
 
 		} 
 //		else if ("onePageBefore".equals(action)) {
@@ -332,7 +334,12 @@ public class BoardServlet2 extends HttpServlet {
 //			WebUtil.forward("/WEB-INF/views/board2/index.jsp", request, response);
 		//}
 	else { 			// 전체 게시판 조회
-			String keyword = request.getParameter("keyword") == null ? "":request.getParameter("keyword");
+		
+			String msg = request.getParameter("msg") == null ? "":request.getParameter("msg");
+			System.out.println("msg = "+msg);
+			if(!"".equals(msg)) {
+				request.setAttribute("msg", "답글이 있는 게시글은 삭제할 수 없습니다");
+			}
 			
 			PageVo page = new PageVo();
 			Long curPage = 1L;
@@ -351,7 +358,6 @@ public class BoardServlet2 extends HttpServlet {
 			page.setStart((curPage-1)*showNum);
 			page.setPageShowNum(pageShowNum);
 			List<BoardVo2> list = dao.findAll(page);
-			request.setAttribute("keyword", keyword);
 			request.setAttribute("list", list);
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board2/index.jsp", request, response);

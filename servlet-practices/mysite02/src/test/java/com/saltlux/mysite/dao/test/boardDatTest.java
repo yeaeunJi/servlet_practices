@@ -85,7 +85,7 @@ public class boardDatTest {
 		dao.getMaxONo(gNo);
 	}
 	public static void updateOrderNo(int gNo, int oNo) {
-		dao.updateOrderNo(gNo, oNo);
+		dao.updateOrderNo(gNo, oNo, 1);
 	}
 	
 	public static boolean  isGetChild(BoardVo2 vo) {
