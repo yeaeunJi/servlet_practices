@@ -11,7 +11,15 @@ public class PageVo {
 	private Long  pageShowNum ; 
 	
 	
-	
+	public PageVo() {}
+	public PageVo(Long curPage, Long start, Long showNum, Long startPage, Long endPage,	Long pageShowNum) {
+		this.curPage = curPage;
+		this.start = start;
+		this.showNum = showNum;
+		this.startPage = startPage;
+		this.endPage = endPage;
+		this.pageShowNum = pageShowNum;
+	}
 	public Long getPageShowNum() {
 		return pageShowNum;
 	}

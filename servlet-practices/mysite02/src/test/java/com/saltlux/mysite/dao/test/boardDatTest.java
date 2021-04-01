@@ -17,8 +17,8 @@ public class boardDatTest {
 		pageVo.setShowNum(10L);
 		findAll(pageVo);
 		
-		PageVo page = dao.paging(2L);
-		System.out.println("게시글 수 : "+page.getTotalCount()+", 총 페이지 수 : "+page.getTotal());
+//		PageVo page = dao.paging(2);
+//		System.out.println("게시글 수 : "+page.getTotalCount()+", 총 페이지 수 : "+page.getTotal());
 //		findOne("6065cf5a51b6b92f7cfbe597");
 //		BoardVo2 vo = new BoardVo2();
 //		vo.setDepth(1);

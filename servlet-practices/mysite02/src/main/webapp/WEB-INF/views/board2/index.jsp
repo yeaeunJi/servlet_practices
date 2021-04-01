@@ -95,7 +95,7 @@ background-color: #777799;;
 						</c:choose>
 						
 						<c:forEach step="1" begin="${page.startPage}" end="${page.endPage}"  var="pageNum"  varStatus="status">
-					<li><a
+					<li><a class="page"
 								href="${pageContext.request.contextPath }/board2?a=movePage&movePage=${pageNum}&keyword=${keyword}">${pageNum}</a></li>
 					 
 						</c:forEach>
@@ -145,7 +145,16 @@ window.onload = function() {
 	if (msg != ''){
 		alert(msg);
 	}
-
+	
+	// curPage a태그의 색이 red 로 바뀜
+	let a = document.getElementsByClassName("page");
+	for(let i = 0; i < a.length; i++){
+		let text= a[i].innerHTML;
+		if (text == '${page.curPage}'){
+			a[i].style.color = "red";
+			break;
+		}
+	}
 }
 </script>
 
