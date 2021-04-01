@@ -7,7 +7,9 @@ import static com.mongodb.client.model.Projections.include;
 import java.math.MathContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.Document;
@@ -43,8 +45,8 @@ public class BoardDao2 {
 
 		for(Object doc: results) {
 			Document doc1 = (Document)doc;
-			max = doc1.getInteger("groupNo");
-			System.out.println(doc1.get("groupNo"));
+			max = doc1.getInteger("gNo");
+			System.out.println(doc1.get("go"));
 		}
 
 		System.out.println("*************** getNewGNo end *************** ");
@@ -64,7 +66,9 @@ public class BoardDao2 {
 				int gNo = getNewGNo();
 				vo.setgNo(gNo);
 			}
-
+			String dateFormat = "yyyy-MM-dd HH:mm:ss";
+			SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+			vo.setRegDate(df.format(new Date()));
 			MongoCollection<Document> boards = db.getCollection("board");
 			Document doc = new Document(vo.voToMap());
 			System.out.println("insert한 정보 : "+doc.toJson());
@@ -78,11 +82,11 @@ public class BoardDao2 {
 	}
 
 
-	public boolean updateOrderNo(int gNo, int oNo) {
+	public boolean updateOrderNo(int gNo, int oNo, int number) {
 		System.out.println("*************** updateOrderNo start *************** ");
 		MongoDatabase db = Mongo.getDatabase();
 		MongoCollection<Document> boards = db.getCollection("board");
-		UpdateResult updateResult= boards.updateMany(gt("oNo", oNo), Updates.inc("oNo", 1));
+		UpdateResult updateResult= boards.updateMany(gt("oNo", oNo), Updates.inc("oNo", number));
 		System.out.println("*************** updateOrderNo end *************** ");
 		return updateResult.getModifiedCount() > 0 ?true:false;
 	}
@@ -105,6 +109,7 @@ public class BoardDao2 {
 				Document doc = (Document) obj;
 				vo.setNo(doc.getObjectId("_id").toString());
 				vo.setTitle(doc.getString("title"));
+				vo.setWriter(doc.getString("writer"));
 				vo.setContents(doc.getString("contents"));
 				vo.setRegDate(doc.getString("regDate"));
 				vo.setUserNo(doc.getInteger("userNo"));
@@ -157,6 +162,7 @@ public class BoardDao2 {
 			Document doc = (Document) obj;
 			vo.setNo(doc.getObjectId("_id").toString());
 			vo.setTitle(doc.getString("title"));
+			vo.setWriter(doc.getString("writer"));
 			vo.setContents(doc.getString("contents"));
 			vo.setRegDate(doc.getString("regDate"));
 			vo.setUserNo(doc.getInteger("userNo"));
@@ -195,7 +201,7 @@ public class BoardDao2 {
 		System.out.println("*************** delete end *************** ");
 		return queryResult.getDeletedCount() == 1?true:false;
 	}
-
+	
 	public boolean isGetChild(BoardVo2 vo) {
 		//		String sql = "select count(*)  from board where depth > ? and order_no = ?+1 and group_no=?;";
 		// 나와 gNo가 같고 순서가 나보다 크고 depth가 나보다 큰애가 하나라도 있으면 true

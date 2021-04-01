@@ -132,12 +132,7 @@ background-color: #777799;;
 					</c:if>
 				</div>
 
-				<div class="history">
-				<h3 style="display:inline-block;"> ** 최근 방문한 게시글 ** </h3>
-				<button onclick="removeHistory()">히스토리 지우기</button> 
-				<ul  id="historyList" >			
-				</ul>
-				</div>
+				
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
@@ -145,44 +140,5 @@ background-color: #777799;;
 	</div>
 </body>
 
-<script>
-// 전역변수 history 배열에  localStorage에서 가져온 값을 담아놓음
-var history = [];
 
-window.onload = function() {  
-	history =JSON.parse(localStorage.getItem("history"))||[];
-	getHistory();
-}
-
-// 게시글 제목 url 클릭 시 발생하는 이벤트함수 : localStorage에 접근 url 추가
-function setHistory(aTag)
-{
-	let url = aTag.href; 
-	history.push(url);
-	localStorage.setItem("history", JSON.stringify(history));
-	getHistory();
-}
-
-// history에 저장된 값을 화면에 표시 --> dom 사용
-function getHistory(){
-	// historyList 태그에 추가할 노드 생성
-	let parent = document.getElementById("historyList");
-	for (var i = history.length-1; i >= 0 ; i--){
-		
-		let li = document.createElement("li");
-		let liNode = document.createTextNode("["+(i+1)+"] "+history[i]);
-		var att=document.createAttribute("style");
-		att.value="border:1px solid purple;";
-		li.setAttributeNode(att);
-		li.appendChild(liNode);
-		parent.appendChild(li);
-	}
-}
-
-// 히스토리 삭제
-function removeHistory(){	
-	localStorage.removeItem('history');
-	//window.location.reload();
-}
-</script>
 </html>

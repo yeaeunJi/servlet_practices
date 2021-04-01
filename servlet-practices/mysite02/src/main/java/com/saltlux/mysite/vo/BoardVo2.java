@@ -83,8 +83,8 @@ public class BoardVo2 {
 	}
 
 	public Map<String, Object> voToMap(){
-		Object[] values = { title, userNo, contents, count, regDate, gNo, oNo, depth};
-		String[] lists = {"title", "userNo", "contents", "count", "regDtae", "gNo", "oNo", "depth"};
+		Object[] values = { title, writer, userNo, contents, count, regDate, gNo, oNo, depth};
+		String[] lists = {"title", "writer", "userNo", "contents", "count", "regDtae", "gNo", "oNo", "depth"};
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		for(int i =0; i<lists.length; i++) {
