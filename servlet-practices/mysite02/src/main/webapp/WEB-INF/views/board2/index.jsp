@@ -60,11 +60,13 @@ background-color: #777799;;
 							</a></td>
 							<td>${vo.writer }</td>
 							<td>${vo.regDate }</td>
+							<td>
 							<c:if test="${!empty authUser  && authUser.no == vo.userNo}">
-								<td><a
+								<a
 									href="${pageContext.request.contextPath }/board2?a=delete&no=${vo.no}&keyword=${keyword}"
-									class="del">삭제</a></td>
+									class="del">삭제</a>
 							</c:if>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>
