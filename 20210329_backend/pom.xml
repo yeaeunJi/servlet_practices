@@ -9,6 +9,9 @@
 		<project.reporting.ouputEncoding>UTF-8</project.reporting.ouputEncoding>
 	</properties>
 	<dependencies>
+	<!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery.ajax -->
+
+	
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>

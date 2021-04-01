@@ -10,7 +10,7 @@ public class Mysql {
 	private static Mysql mysql ;
 	private static Connection normalConn = null;
 	private static Connection replicatedConn = null;
-	public static boolean useReplicated = true;
+	public static boolean useReplicated = false;
 
 	static {
 		try {
@@ -38,7 +38,8 @@ public class Mysql {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			String url = "jdbc:mysql://localhost:3306/webdb?characterEncoding=utf8&serverTimezone=UTC";
 			//System.out.println("***************** normalDriver 로딩 완료 *****************");
-			normalConn = DriverManager.getConnection(url, "repluser", "replpw");
+			//normalConn = DriverManager.getConnection(url, "repluser", "replpw");
+			normalConn = DriverManager.getConnection(url, "webdb", "webdb");
 			System.out.println("***************** normal connection 완료 *****************");
 		} 
 		catch (ClassNotFoundException e) {

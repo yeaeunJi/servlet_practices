@@ -1,11 +1,11 @@
 <html>
 <body>
 
-<h2>The XMLHttpRequest Object</h2>
+	<h2>The XMLHttpRequest Object</h2>
 
-<p id="demo"></p>
- 
-<script>
+	<p id="demo"></p>
+
+	<script>
 // [] 로 th이 될 내용 가져와서 dom 객체 생성
 function makeTh(XML, table, lists){
  let parent = document.body;
@@ -54,3 +54,4 @@ xhttp.send();
 </script>
 </body>
 </html>
+

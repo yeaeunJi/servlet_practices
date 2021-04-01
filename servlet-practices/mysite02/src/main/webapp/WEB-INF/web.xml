@@ -61,5 +61,12 @@
 		<servlet-name>BoardServlet</servlet-name>
 		<url-pattern>/board</url-pattern>
 	</servlet-mapping>
-
+<servlet>
+		<servlet-name>BoardServlet2</servlet-name>
+		<servlet-class>com.saltlux.mysite.controller.BoardServlet2</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BoardServlet2</servlet-name>
+		<url-pattern>/board2</url-pattern>
+	</servlet-mapping>
 </web-app>
