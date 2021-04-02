@@ -20,16 +20,14 @@ public class MainServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//		System.out.println("doGet()!!!!!!!!");
+		//	System.out.println("doGet()!!!!!!!!");
 		int visitCount = 0;
 
-		//		getServletContext().setAttribute(getServletName(), response); // 어플리케이션 범위로 객체 저장
+		//	getServletContext().setAttribute(getServletName(), response); // 어플리케이션 범위로 객체 저장
 
 		// 만약 mongodb 로 접속한다면 임의로 세션 부여
 		// session 매니저에게 요청 : true(없으면 생성해서 반환), false(없으면 null반환)
-		
 		try {
-			System.out.println("*****************************");
 			if( Mysql.getConnection() == null) {
 				System.out.println("Mysql이 연결되지 않으므로 자동으로 세션을 부여합니다.");
 			HttpSession session = request.getSession(true); 

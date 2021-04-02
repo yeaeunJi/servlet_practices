@@ -139,14 +139,15 @@ background-color: #777799;;
 							id="new-book">글쓰기</a>
 					</c:if>
 				</div>
-
+<!-- 
 				<div class="history">
 				<h3 style="display:inline-block;"> ** 최근 방문한 게시글 ** </h3>
 				<button onclick="removeHistory()">히스토리 지우기</button> 
 				<ul  id="historyList" >			
 				</ul>
-				</div>
+				</div>-->
 			</div>
+			 
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp" />
 		<c:import url="/WEB-INF/views/includes/footer.jsp" />
@@ -155,7 +156,7 @@ background-color: #777799;;
 
 <script>
 // 전역변수 history 배열에  localStorage에서 가져온 값을 담아놓음
-var history = [];
+/* ar history = [];
 
 window.onload = function() {  
 	history =JSON.parse(localStorage.getItem("history"))||[];
@@ -192,5 +193,5 @@ function removeHistory(){
 	localStorage.removeItem('history');
 	//window.location.reload();
 }
-</script>
+ */</script>
 </html>
