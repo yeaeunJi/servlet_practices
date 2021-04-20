@@ -155,43 +155,20 @@ background-color: #777799;;
 </body>
 
 <script>
-// 전역변수 history 배열에  localStorage에서 가져온 값을 담아놓음
-/* ar history = [];
-
-window.onload = function() {  
-	history =JSON.parse(localStorage.getItem("history"))||[];
-	getHistory();
-}
-
-// 게시글 제목 url 클릭 시 발생하는 이벤트함수 : localStorage에 접근 url 추가
-function setHistory(aTag)
-{
-	let url = aTag.href; 
-	history.push(url);
-	localStorage.setItem("history", JSON.stringify(history));
-	getHistory();
-}
-
-// history에 저장된 값을 화면에 표시 --> dom 사용
-function getHistory(){
-	// historyList 태그에 추가할 노드 생성
-	let parent = document.getElementById("historyList");
-	for (var i = history.length-1; i >= 0 ; i--){
-		
-		let li = document.createElement("li");
-		let liNode = document.createTextNode("["+(i+1)+"] "+history[i]);
-		var att=document.createAttribute("style");
-		att.value="border:1px solid purple;";
-		li.setAttributeNode(att);
-		li.appendChild(liNode);
-		parent.appendChild(li);
+window.onload = function() {
+	let msg = '${msg}';
+	if (msg != ''){
+		alert(msg);
 	}
-}
-
-// 히스토리 삭제
-function removeHistory(){	
-	localStorage.removeItem('history');
-	//window.location.reload();
-}
- */</script>
+	
+	// curPage a태그의 색이 red 로 바뀜
+	let a = document.getElementsByClassName("page");
+	for(let i = 0; i < a.length; i++){
+		let text= a[i].innerHTML;
+		if (text == '${page.curPage}'){
+			a[i].style.color = "red";
+			break;
+		}
+	}
+}</script>
 </html>
