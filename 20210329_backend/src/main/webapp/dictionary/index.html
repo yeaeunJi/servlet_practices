@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<script src="./lib/jquery/jquery-3.3.1.min.js"></script>
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!-- 부가적인 테마 -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<title>Dictionary for 지혜언니♡</title>
+<meta charset="UTF-8">
+<style>
+.tab-content, .tabpanel, iframe  {background: #fff;position: relative;width: 100%;height:650px;z-index: 999;box-shadow: 0 -2px 3px -2px rgba(0,0,0,0.2), 0 2px 2px rgba(0,0,0,0.1);border-radius: 0 12px 3px 3px;}
+input {
+   margin: auto;
+   width: 60%;
+   margin-left : 5%;
+   margin-top: 2%;
+
+}
+ button {
+ 
+   margin: auto;
+   margin-top: 4%;
+   margin-left:1%;
+   height:25px;
+   display:linline;
+
+}
+</style>
+</head>
+<body>
+	<div role="tabpanel">
+		
+		
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist">
+		<li  style="width:500px; padding-bottom:30px; padding-left:10px;"> [  전체 검색 ] :<input  type="text"  id="search" value="" /><button onclick="search()" class ="glyphicon glyphicon-search">검색</button></li>
+			<li role="presentation" class="active"><a href="#home"
+				aria-controls="home" role="tab" data-toggle="tab" class="myTab">네이버
+					백과사전</a></li>
+			<li role="presentation"><a href="#profile"
+				aria-controls="profile" role="tab" data-toggle="tab" class="myTab">위키
+					백과</a></li>
+			<li role="presentation"><a href="#info"
+				aria-controls="info" role="tab" data-toggle="tab" class="myTab">기획/개발</a></li>
+			<li role="presentation"><a href="#messages"
+				aria-controls="messages" role="tab" data-toggle="tab" class="myTab">대문(공지사항)</a></li>
+			
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane fade in active" id="home">
+				<iframe id="naver" src="http://terms.naver.com"> </iframe>
+			</div>
+			<div role="tabpanel" class="tab-pane fade" id="profile">
+				<iframe id="wiki" src="http://ko.wikipedia.org/wiki/"> </iframe>
+			</div>
+			<div role="tabpanel" class="tab-pane fade" id="info">					
+					<h3>개발자</h3>
+					<p>Angela</p>
+					<p>부트스트랩 사용</p>
+					<h3>기획자</h3>
+					<p>지혜</p>
+					<h3>버전</h3>
+					<p>0.1</p></div>
+			<div role="tabpanel" class="tab-pane fade" id="messages">
+					
+			</div>
+		</div>
+
+	</div>
+</body>
+<script>	
+	var tabs = document.getElementsByClassName("myTab");
+	for(let i=0; i < tabs.length; i++){		
+		tabs[i].addEventListener("click", swithTab);
+	}
+
+ 	function swithTab() {
+		let href = this.getAttribute("aria-controls");
+		let beforeTab = document.getElementsByClassName('tab-pane fade in active')[0];
+		beforeTab.setAttribute("class", "tab-pane fade");
+		document.getElementById(href).setAttribute("class", "tab-pane fade in active"); 
+		
+		let li = document.getElementsByClassName("active")[0].removeAttribute("class");
+		this.parentNode.setAttribute("class", "active");
+		
+	} 
+
+ 	function search(){
+ 		let naver = 'http://terms.naver.com/search.naver?query=';
+ 		let wiki = 'http://ko.wikipedia.org/wiki/';
+ 		
+ 		let keyword = document.getElementById("search").value;
+ 		
+ 		let objs = document.getElementsByTagName("iframe");
+ 		for(let i =0; i < objs.length; i++){
+ 			let url = '';
+ 			if(objs[i].getAttribute("id") == "naver")  {
+ 				url = naver+keyword;
+ 			} else if(objs[i].getAttribute("id") == "wiki"){
+ 				url = wiki+keyword;
+ 			}
+ 			objs[i].setAttribute("src", url);
+ 		}
+ 	}
+ 	
+ 	// deny --> alert() 후 뒤로가기
+</script>
+</html>
