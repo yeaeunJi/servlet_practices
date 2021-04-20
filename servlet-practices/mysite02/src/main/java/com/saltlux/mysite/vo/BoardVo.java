@@ -24,6 +24,27 @@ public class BoardVo {
 	private Long depth;
 	private char delFlag = 'F'; // 삭제 여부
 	
+	public BoardVo() {
+		
+	}
+	
+	public BoardVo(Long no, String title, String contents) {
+		this(no, title, null, contents, -1L, 0L, 0L, 0L);
+	}
+	
+	public BoardVo(String title, String writer, String contents, Long userNo, Long gNo, Long oNo, Long depth) {
+		this(null, title, writer, contents, userNo, gNo, oNo, depth);
+	}
+	public BoardVo(Long no, String title, String writer, String contents,  Long userNo, Long gNo, 	Long oNo, Long depth) {
+		this.no = no;
+		this.title = title;
+		this.writer = writer;
+		this.contents = contents;
+		this.userNo = userNo;
+		this.gNo = gNo;
+		this.oNo = oNo;
+		this.depth = depth;
+	}
 	
 	public Long getNo() {
 		return no;

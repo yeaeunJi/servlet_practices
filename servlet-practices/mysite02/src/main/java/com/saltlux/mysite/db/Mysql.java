@@ -10,7 +10,7 @@ public class Mysql {
 	private static Mysql mysql ;
 	private static Connection normalConn = null;
 	private static Connection replicatedConn = null;
-	public static boolean useReplicated = true;
+	public static boolean useReplicated = false;
 
 	static {
 		try {

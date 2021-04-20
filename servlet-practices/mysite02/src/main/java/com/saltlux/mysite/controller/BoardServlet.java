@@ -38,7 +38,7 @@ public class BoardServlet extends HttpServlet {
 				return;
 			}
 
-			Long userNo = authUser.getNo();
+			Long userNo = authUser.getNo();			
 			String title = request.getParameter("title");
 			String contents = request.getParameter("content");
 
@@ -98,8 +98,6 @@ public class BoardServlet extends HttpServlet {
 				Long gNo = parent.getgNo(); 
 				Long oNo = parent.getoNo();
 				Long depth = parent.getDepth() + 1;
-
-				// 같은 그룹 내에서 oNo 최댓값 조회
 				Long maxONo = dao.getMaxONo(gNo);
 
 				// 부모 oNo가 maxONo 보다 작으면 oNo이상 +1
@@ -264,19 +262,20 @@ public class BoardServlet extends HttpServlet {
 			request.setAttribute("page", page);
 			WebUtil.forward("/WEB-INF/views/board/index.jsp", request, response);
 		} 	else if ("mulPageNext".equals(action)) {
+			BoardDao dao = new BoardDao();
 			Long endPage = request.getParameter("endPage") == null?1L:Long.parseLong(request.getParameter("endPage"));
 			Long totalPage = request.getParameter("totalPage") == null?1L:Long.parseLong(request.getParameter("totalPage"));
-
+			Long start = endPage*showNum;
 			String keyword = request.getParameter("keyword") == null ? "":request.getParameter("keyword");
 			request.setAttribute("keyword", keyword);
-			BoardDao dao = new BoardDao();
+			
 			PageVo page = new PageVo();
 			page= dao.paging(showNum, keyword);
 			page.setShowNum(showNum);
 			page.setCurPage(endPage+1);
 			page.setStartPage(endPage+1);
-			page.setStart((endPage)*showNum);
-
+			page.setStart(start);
+			
 			if (totalPage - (endPage+1) < pageShowNum)	endPage = totalPage;
 			else if(endPage % pageShowNum == 0) {
 				endPage += pageShowNum;
@@ -294,17 +293,18 @@ public class BoardServlet extends HttpServlet {
 			String keyword = request.getParameter("keyword") == null ? "":request.getParameter("keyword");
 			request.setAttribute("keyword", keyword);
 			Long startPage = request.getParameter("startPage") == null?1L:Long.parseLong(request.getParameter("startPage"));
-			//Long totalPage = request.getParameter("totalPage") == null?1L:Long.parseLong(request.getParameter("totalPage"));
+			Long newStartPage = startPage - pageShowNum;
+			Long start = (newStartPage-1)*showNum;
 			BoardDao dao = new BoardDao();
 			PageVo page = new PageVo();
+			
 			page= dao.paging(showNum, keyword);
 			page.setShowNum(showNum);
-			page.setCurPage(startPage-1);
-			page.setStart((startPage-2)*showNum);
+			page.setCurPage(newStartPage);
+			page.setStart(start);
 			page.setEndPage(startPage-1);
 
-			startPage -= (pageShowNum-1);
-			page.setStartPage(startPage-1);
+			page.setStartPage(newStartPage);
 
 			page.setTotal(page.getTotal());
 			page.setPageShowNum(pageShowNum);

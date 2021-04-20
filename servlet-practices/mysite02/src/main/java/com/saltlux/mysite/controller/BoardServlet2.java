@@ -262,7 +262,9 @@ public class BoardServlet2 extends HttpServlet {
 			if(!"".equals(msg)) {
 				request.setAttribute("msg", "답글이 있는 게시글은 삭제할 수 없습니다");
 			}
-
+			
+			
+			
 			PageVo page = new PageVo();
 			Long curPage = 1L;
 			Long endPage =1L;
